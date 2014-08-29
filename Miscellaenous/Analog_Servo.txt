@@ -1,0 +1,5 @@
+Torque: 1.2kg/cm @ 4.8v, 1.4kg/cm @ 6v 
+Weight: 10g 
+Speed: 0.10/60deg @ 4.8v, 0.09/60deg @ 6v
+Voltage: 4.8v~6v
+Plug: JR
