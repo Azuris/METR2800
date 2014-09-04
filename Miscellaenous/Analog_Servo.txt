@@ -3,3 +3,5 @@ Weight: 10g
 Speed: 0.10/60deg @ 4.8v, 0.09/60deg @ 6v
 Voltage: 4.8v~6v
 Plug: JR
+
+http://www.mouser.com/ds/2/311/SFH%20309,%20SFH%20309%20FA,%20Lead%20(Pb)%20Free%20Product%20-%20RoHS-368614.pdf
