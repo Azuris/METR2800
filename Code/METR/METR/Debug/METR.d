@@ -10,7 +10,10 @@ METR.d METR.o: .././METR.c \
  c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/common.h \
  c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/version.h \
  c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/fuse.h \
- c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/lock.h
+ c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/lock.h \
+ c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util/delay.h \
+ c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util/delay_basic.h \
+ c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/math.h
 
 c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/io.h:
 
@@ -35,3 +38,9 @@ c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrt
 c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/fuse.h:
 
 c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/avr/lock.h:
+
+c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util/delay.h:
+
+c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util/delay_basic.h:
+
+c:\program\ files\atmel\atmel\ studio\ 6.0\extensions\atmel\avrgcc\3.4.1.95\avrtoolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/math.h:

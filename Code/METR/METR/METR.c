@@ -7,30 +7,36 @@
 
 
 #include <avr/io.h>
+#include <util/delay.h>
 
 int main(void) {
 	uint8_t test;
 	
 	DDRD = 0x00;
 	while(1) {
-		if (PIND ^= 0x04) {
+		if (PIND == 0x04) {
 			//run stationary single drop
 			DDRD |= (1 << DDD6);
 			TCCR0A |= 0b10000001;
-			TCCR0B |= 0b00001010;
+			TCCR0B |= 0b00000101;
+			
+			OCR0A = 0x0A;
+			_delay_ms(100);
+			OCR0A = 0x38;
+			_delay_ms(100);
 			//require timing for angles
 			// freq = (8MHz or 16Mhz)/8*510
 			return 0;
 		}
-		if (PIND ^= 0x05) {
+		if (PIND == 0x05) {
 			//run moving single drop
 			return 0;
 		}
-		if (PIND ^= 0x06) {
+		if (PIND == 0x06) {
 			//run ballistic run
 			return 0;
 		}
-		if (PIND ^= 0x07) {
+		if (PIND == 0x07) {
 			//run moving multiple drop
 			return 0;
 		}
