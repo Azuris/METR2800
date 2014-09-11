@@ -10,9 +10,19 @@ Discarded input sections
  .bss           0x00000000        0x0 AD_Convert.o
  .text.InitADC  0x00000000        0xe AD_Convert.o
  .text.ReadADC  0x00000000       0x34 AD_Convert.o
- .text.ADC_Run  0x00000000        0xc AD_Convert.o
+ .text.ADC_Run  0x00000000       0x12 AD_Convert.o
  .text          0x00000000        0x0 METR.o
  .bss           0x00000000        0x0 METR.o
+ .text          0x00000000        0x0 Mode_Operation.o
+ .bss           0x00000000        0x0 Mode_Operation.o
+ .text.Mode_One
+                0x00000000       0x38 Mode_Operation.o
+ .text.Mode_Two
+                0x00000000        0x2 Mode_Operation.o
+ .text.Mode_Three
+                0x00000000        0x2 Mode_Operation.o
+ .text.Mode_Four
+                0x00000000        0x2 Mode_Operation.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
  .text.libgcc.mul
@@ -45,6 +55,7 @@ Address of section .data set to 0x800100
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328.o
 LOAD AD_Convert.o
 LOAD METR.o
+LOAD Mode_Operation.o
 START GROUP
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr5\libm.a
 END GROUP
@@ -142,7 +153,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000       0xb0
+.text           0x00000000       0xd0
  *(.vectors)
  .vectors       0x00000000       0x68 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328.o
                 0x00000000                __vector_default
@@ -222,13 +233,13 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
                 0x0000007c                __vector_20
                 0x00000080                . = ALIGN (0x2)
  *(.text.*)
- .text.main     0x00000080       0x2c METR.o
+ .text.main     0x00000080       0x4c METR.o
                 0x00000080                main
-                0x000000ac                . = ALIGN (0x2)
+                0x000000cc                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000000ac        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
-                0x000000ac                _exit
-                0x000000ac                exit
+ .fini9         0x000000cc        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
+                0x000000cc                _exit
+                0x000000cc                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -247,16 +258,17 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000000ac        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
+ .fini0         0x000000cc        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000000b0                _etext = .
+                0x000000d0                _etext = .
 
-.data           0x00800100        0x0 load address 0x000000b0
+.data           0x00800100        0x0 load address 0x000000d0
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/../../../../avr/lib/avr5/crtm328.o
  .data          0x00800100        0x0 AD_Convert.o
  .data          0x00800100        0x0 METR.o
+ .data          0x00800100        0x0 Mode_Operation.o
  .data          0x00800100        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.7.2/avr5\libgcc.a(_exit.o)
  *(.data*)
  *(.rodata)
@@ -272,8 +284,8 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  *(.bss*)
  *(COMMON)
                 0x00800100                PROVIDE (__bss_end, .)
-                0x000000b0                __data_load_start = LOADADDR (.data)
-                0x000000b0                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000000d0                __data_load_start = LOADADDR (.data)
+                0x000000d0                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800100        0x0
                 0x00800100                PROVIDE (__noinit_start, .)
@@ -326,6 +338,7 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
  .comment       0x00000000       0x2f AD_Convert.o
                                  0x30 (size before relaxing)
  .comment       0x00000000       0x30 METR.o
+ .comment       0x00000000       0x30 Mode_Operation.o
 
 .debug
  *(.debug)
@@ -339,47 +352,56 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x50
+.debug_aranges  0x00000000       0x88
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x30 AD_Convert.o
  .debug_aranges
                 0x00000030       0x20 METR.o
+ .debug_aranges
+                0x00000050       0x38 Mode_Operation.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x229
+.debug_info     0x00000000      0x479
  *(.debug_info)
- .debug_info    0x00000000       0xf3 AD_Convert.o
- .debug_info    0x000000f3      0x136 METR.o
+ .debug_info    0x00000000      0x110 AD_Convert.o
+ .debug_info    0x00000110      0x136 METR.o
+ .debug_info    0x00000246      0x233 Mode_Operation.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x18f
+.debug_abbrev   0x00000000      0x2c6
  *(.debug_abbrev)
- .debug_abbrev  0x00000000       0xbf AD_Convert.o
- .debug_abbrev  0x000000bf       0xd0 METR.o
+ .debug_abbrev  0x00000000       0xd6 AD_Convert.o
+ .debug_abbrev  0x000000d6       0xd0 METR.o
+ .debug_abbrev  0x000001a6      0x120 Mode_Operation.o
 
-.debug_line     0x00000000      0x287
+.debug_line     0x00000000      0x44f
  *(.debug_line)
- .debug_line    0x00000000      0x106 AD_Convert.o
- .debug_line    0x00000106      0x181 METR.o
+ .debug_line    0x00000000      0x103 AD_Convert.o
+ .debug_line    0x00000103      0x180 METR.o
+ .debug_line    0x00000283      0x1cc Mode_Operation.o
 
-.debug_frame    0x00000000       0x68
+.debug_frame    0x00000000       0xc4
  *(.debug_frame)
- .debug_frame   0x00000000       0x44 AD_Convert.o
- .debug_frame   0x00000044       0x24 METR.o
+ .debug_frame   0x00000000       0x4c AD_Convert.o
+ .debug_frame   0x0000004c       0x24 METR.o
+ .debug_frame   0x00000070       0x54 Mode_Operation.o
 
-.debug_str      0x00000000      0x120
+.debug_str      0x00000000      0x180
  *(.debug_str)
- .debug_str     0x00000000       0xb7 AD_Convert.o
-                                 0xeb (size before relaxing)
- .debug_str     0x000000b7       0x69 METR.o
-                                0x11f (size before relaxing)
+ .debug_str     0x00000000       0xbf AD_Convert.o
+                                 0xf3 (size before relaxing)
+ .debug_str     0x000000bf       0x6d METR.o
+                                0x123 (size before relaxing)
+ .debug_str     0x0000012c       0x54 Mode_Operation.o
+                                0x165 (size before relaxing)
 
-.debug_loc      0x00000000       0x3d
+.debug_loc      0x00000000      0x16e
  *(.debug_loc)
- .debug_loc     0x00000000       0x3d AD_Convert.o
+ .debug_loc     0x00000000       0x8b AD_Convert.o
+ .debug_loc     0x0000008b       0xe3 Mode_Operation.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -387,10 +409,11 @@ LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.2.1002/avr
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x30
+.debug_ranges   0x00000000       0x58
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x20 AD_Convert.o
  .debug_ranges  0x00000020       0x10 METR.o
+ .debug_ranges  0x00000030       0x28 Mode_Operation.o
 
 .debug_macro
  *(.debug_macro)

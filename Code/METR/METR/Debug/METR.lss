@@ -3,31 +3,31 @@ METR.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  000000b0  00000124  2**0
+  0 .data         00000000  00800100  000000d0  00000144  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000b0  00000000  00000000  00000074  2**1
+  1 .text         000000d0  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  00000124  2**2
+  2 .stab         000006cc  00000000  00000000  00000144  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  000007f0  2**0
+  3 .stabstr      00000097  00000000  00000000  00000810  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  00000887  2**0
+  4 .comment      0000002f  00000000  00000000  000008a7  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 00000050  00000000  00000000  000008b6  2**0
+  5 .debug_aranges 00000088  00000000  00000000  000008d6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000229  00000000  00000000  00000906  2**0
+  6 .debug_info   00000479  00000000  00000000  0000095e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000018f  00000000  00000000  00000b2f  2**0
+  7 .debug_abbrev 000002c6  00000000  00000000  00000dd7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000287  00000000  00000000  00000cbe  2**0
+  8 .debug_line   0000044f  00000000  00000000  0000109d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000068  00000000  00000000  00000f48  2**2
+  9 .debug_frame  000000c4  00000000  00000000  000014ec  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000120  00000000  00000000  00000fb0  2**0
+ 10 .debug_str    00000180  00000000  00000000  000015b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000003d  00000000  00000000  000010d0  2**0
+ 11 .debug_loc    0000016e  00000000  00000000  00001730  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000030  00000000  00000000  0000110d  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  0000189e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -67,6 +67,12 @@ uint16_t ReadADC(uint8_t ch)
   2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
 }
   30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
   34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
@@ -89,51 +95,67 @@ uint16_t ReadADC(uint8_t ch)
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
   74:	0e 94 40 00 	call	0x80	; 0x80 <main>
-  78:	0c 94 56 00 	jmp	0xac	; 0xac <_exit>
+  78:	0c 94 66 00 	jmp	0xcc	; 0xcc <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000080 <main>:
-#include <util/delay.h>
+#include "Mode_Operation.h"
 
 int main(void) {
-	uint8_t test;
+	uint8_t switches;
 	
-	ICR1 = 3125;
-  80:	85 e3       	ldi	r24, 0x35	; 53
-  82:	9c e0       	ldi	r25, 0x0C	; 12
-  84:	90 93 87 00 	sts	0x0087, r25
-  88:	80 93 86 00 	sts	0x0086, r24
 	DDRD = 0x00;
-  8c:	1a b8       	out	0x0a, r1	; 10
+  80:	1a b8       	out	0x0a, r1	; 10
+	DDRC = 0x00;
+  82:	17 b8       	out	0x07, r1	; 7
+	ICR1 = 4999;
+  84:	87 e8       	ldi	r24, 0x87	; 135
+  86:	93 e1       	ldi	r25, 0x13	; 19
+  88:	90 93 87 00 	sts	0x0087, r25
+  8c:	80 93 86 00 	sts	0x0086, r24
+	
 	DDRB |= (1 << DDB1);
-  8e:	21 9a       	sbi	0x04, 1	; 4
-	while(1) {
-		PORTB ^= 0x02;
-  90:	92 e0       	ldi	r25, 0x02	; 2
-  92:	85 b1       	in	r24, 0x05	; 5
-  94:	89 27       	eor	r24, r25
-  96:	85 b9       	out	0x05, r24	; 5
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
+  90:	21 9a       	sbi	0x04, 1	; 4
+	TCNT1 = 0;
+  92:	10 92 85 00 	sts	0x0085, r1
+  96:	10 92 84 00 	sts	0x0084, r1
+	TCCR1A |= (1 << COM1A1);
+  9a:	e0 e8       	ldi	r30, 0x80	; 128
+  9c:	f0 e0       	ldi	r31, 0x00	; 0
+  9e:	80 81       	ld	r24, Z
+  a0:	80 68       	ori	r24, 0x80	; 128
+  a2:	80 83       	st	Z, r24
+	TCCR1B |= (1 << WGM13)|(1 << CS11)|(1 << CS10);
+  a4:	e1 e8       	ldi	r30, 0x81	; 129
+  a6:	f0 e0       	ldi	r31, 0x00	; 0
+  a8:	80 81       	ld	r24, Z
+  aa:	83 61       	ori	r24, 0x13	; 19
+  ac:	80 83       	st	Z, r24
+				
+	OCR1A = 535;
+  ae:	87 e1       	ldi	r24, 0x17	; 23
+  b0:	92 e0       	ldi	r25, 0x02	; 2
+  b2:	90 93 89 00 	sts	0x0089, r25
+  b6:	80 93 88 00 	sts	0x0088, r24
+  ba:	8f e3       	ldi	r24, 0x3F	; 63
+  bc:	9c e9       	ldi	r25, 0x9C	; 156
+  be:	01 97       	sbiw	r24, 0x01	; 1
+  c0:	f1 f7       	brne	.-4      	; 0xbe <main+0x3e>
+  c2:	00 c0       	rjmp	.+0      	; 0xc4 <main+0x44>
+  c4:	00 00       	nop
+			Mode_Three(switches);
+			
+			Mode_Four(switches);
+		}
+	}	
+  c6:	81 e0       	ldi	r24, 0x01	; 1
+  c8:	90 e0       	ldi	r25, 0x00	; 0
+  ca:	08 95       	ret
 
-	__builtin_avr_delay_cycles(__ticks_dc);
-  98:	2f e7       	ldi	r18, 0x7F	; 127
-  9a:	38 e3       	ldi	r19, 0x38	; 56
-  9c:	81 e0       	ldi	r24, 0x01	; 1
-  9e:	21 50       	subi	r18, 0x01	; 1
-  a0:	30 40       	sbci	r19, 0x00	; 0
-  a2:	80 40       	sbci	r24, 0x00	; 0
-  a4:	e1 f7       	brne	.-8      	; 0x9e <main+0x1e>
-  a6:	00 c0       	rjmp	.+0      	; 0xa8 <main+0x28>
-  a8:	00 00       	nop
-  aa:	f3 cf       	rjmp	.-26     	; 0x92 <main+0x12>
+000000cc <_exit>:
+  cc:	f8 94       	cli
 
-000000ac <_exit>:
-  ac:	f8 94       	cli
-
-000000ae <__stop_program>:
-  ae:	ff cf       	rjmp	.-2      	; 0xae <__stop_program>
+000000ce <__stop_program>:
+  ce:	ff cf       	rjmp	.-2      	; 0xce <__stop_program>

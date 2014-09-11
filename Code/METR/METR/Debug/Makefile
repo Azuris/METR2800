@@ -37,7 +37,8 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../AD_Convert.c \
-../METR.c
+../METR.c \
+../Mode_Operation.c
 
 
 PREPROCESSING_SRCS += 
@@ -48,19 +49,23 @@ ASM_SRCS +=
 
 OBJS +=  \
 AD_Convert.o \
-METR.o
+METR.o \
+Mode_Operation.o
 
 OBJS_AS_ARGS +=  \
 AD_Convert.o \
-METR.o
+METR.o \
+Mode_Operation.o
 
 C_DEPS +=  \
 AD_Convert.d \
-METR.d
+METR.d \
+Mode_Operation.d
 
 C_DEPS_AS_ARGS +=  \
 AD_Convert.d \
-METR.d
+METR.d \
+Mode_Operation.d
 
 OUTPUT_FILE_PATH +=METR.elf
 
@@ -73,6 +78,8 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

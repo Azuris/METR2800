@@ -1,6 +1,7 @@
 #include <avr/io.h>
+#include "AD_Convert.h"
 
-void InitADC()
+void InitADC(void)
 {
 	ADMUX=(1<<REFS0);                         // For Aref=AVcc;
 	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //Rrescalar div factor =128
@@ -28,15 +29,14 @@ uint16_t ReadADC(uint8_t ch)
 	return(ADC);
 }
 
-void ADC_Run()
+uint16_t ADC_Run(uint8_t channel)
 {
 	uint16_t adc_result;
 
 	//Initialize ADC
 	InitADC();
 
-	while(1)
-	{
-		adc_result=ReadADC(0);           // Read Analog value from channel-0
-	}
+	adc_result=ReadADC(channel);           // Read Analog value from channel-4
+	
+	return adc_result;
 }
