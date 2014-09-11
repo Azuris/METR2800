@@ -23,10 +23,12 @@ int main(void) {
 	
 	DDRB |= (1 << DDB1);
 	TCNT1 = 0;
-	TCCR1A |= (1 << COM1A1);
-	TCCR1B |= (1 << WGM13)|(1 << CS11)|(1 << CS10);
+	TCCR1A |= (1 << COM1A1); //Enable compare output A in timer1
+	
+	//Set PWM mode Frequency and Phase Correct with prescalar 8
+	TCCR1B |= (1 << WGM13)|(1 << CS11)|(1 << CS10); 
 				
-	OCR1A = 535;
+	OCR1A = 535; //25% duty cycle
 	_delay_ms(100);
 	
 	return 1;
