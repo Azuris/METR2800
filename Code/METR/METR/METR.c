@@ -17,7 +17,7 @@
 int main(void) {
 	uint8_t switches;
 	
-	DDRD = 0x00;
+	/**DDRD = 0x00;
 	DDRC = 0x00;
 	ICR1 = 4999;
 	
@@ -31,7 +31,7 @@ int main(void) {
 	OCR1A = 535; //25% duty cycle
 	_delay_ms(100);
 	
-	return 1;
+	return 1;**/
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
