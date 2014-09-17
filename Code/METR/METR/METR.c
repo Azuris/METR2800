@@ -16,22 +16,29 @@
 
 int main(void) {
 	uint8_t switches;
+	int test;
 	
-	/**DDRD = 0x00;
+	test = 0;
+	DDRD = 0x00;
 	DDRC = 0x00;
 	ICR1 = 4999;
 	
-	DDRB |= (1 << DDB1);
+	DDRB |= (1 << DDB1) | (1 << DDB4);
+	PORTB = PORTB & (1 << DDB4);
 	TCNT1 = 0;
 	TCCR1A |= (1 << COM1A1); //Enable compare output A in timer1
 	
 	//Set PWM mode Frequency and Phase Correct with prescalar 8
-	TCCR1B |= (1 << WGM13)|(1 << CS11)|(1 << CS10); 
-				
-	OCR1A = 535; //25% duty cycle
-	_delay_ms(100);
+	TCCR1B |= (1 << WGM13)|(1 << CS11); 
 	
-	return 1;**/
+	TIFR1 = (0 << ICF1) | (0 << OCF1B) | (0 << OCF1A) | (0 << TOV1);
+				
+	OCR1A = 2500; //25% duty cycle
+	while(test <30000) {
+		test = test + 1;
+	}
+	TCCR1A |= (1 << COM1A1); 
+	return 1;
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
