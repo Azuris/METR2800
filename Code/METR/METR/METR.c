@@ -13,6 +13,7 @@
 #include <util/delay.h>
 #include "AD_Convert.h"
 #include "Mode_Operation.h"
+#include "Timer1.h"
 
 int main(void) {
 	uint8_t switches;
@@ -22,6 +23,7 @@ int main(void) {
 	DDRB = 0xFF;
 	DDRD |= (1 << DDD7); 
 	PORTD = (1 << DDD7);
+	timer_init();
 	while(1) {
 		switches = PIND;
 		//if (switches & 0x04) {
