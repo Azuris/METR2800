@@ -17,8 +17,8 @@
 void timer_init(void) {
 	ICR1 = 4999;
 
-	DDRB |= (1 << DDB1) | (1 << DDB4);
-	PORTB = PORTB & (1 << DDB4);
+	//DDRB |= (1 << DDB1); //| (1 << DDB4);
+	//PORTB = PORTB & (1 << DDB4);
 	TCNT1 = 0;
 	TCCR1A |= (1 << COM1A1)|(1 << WGM11); //Enable compare output A in timer1
 
@@ -27,7 +27,7 @@ void timer_init(void) {
 
 	TIFR1 = (0 << ICF1) | (0 << OCF1B) | (0 << OCF1A) | (0 << TOV1);
 
-	OCR1A = 500; //50% duty cycle
+	OCR1A = 4500; //50% duty cycle
 
 	return;
 }

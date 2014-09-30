@@ -3,48 +3,69 @@ METR.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00000164  000001d8  2**0
+  0 .data         00000000  00800100  000000ea  0000015e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000164  00000000  00000000  00000074  2**1
+  1 .text         000000ea  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  000001d8  2**2
+  2 .stab         000006cc  00000000  00000000  00000160  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  000008a4  2**0
+  3 .stabstr      00000097  00000000  00000000  0000082c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  0000093b  2**0
+  4 .comment      0000002f  00000000  00000000  000008c3  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 000000a8  00000000  00000000  0000096a  2**0
+  5 .debug_aranges 000000a8  00000000  00000000  000008f2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000044c  00000000  00000000  00000a12  2**0
+  6 .debug_info   000003c5  00000000  00000000  0000099a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000002b4  00000000  00000000  00000e5e  2**0
+  7 .debug_abbrev 00000265  00000000  00000000  00000d5f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000407  00000000  00000000  00001112  2**0
+  8 .debug_line   000003e3  00000000  00000000  00000fc4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000e8  00000000  00000000  0000151c  2**2
+  9 .debug_frame  000000e8  00000000  00000000  000013a8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000014b  00000000  00000000  00001604  2**0
+ 10 .debug_str    00000150  00000000  00000000  00001490  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000000f6  00000000  00000000  0000174f  2**0
+ 11 .debug_loc    0000012e  00000000  00000000  000015e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000068  00000000  00000000  00001845  2**0
+ 12 .debug_ranges 00000068  00000000  00000000  0000170e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00000000 <__vectors>:
+
+uint16_t ReadADC(uint8_t ch)
+{
+	//Select ADC Channel ch must be 0-7
+	ch=ch&0x07;
+	ADMUX|=ch;         
    0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
    4:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
    8:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	
+	//Start Single conversion
+	ADCSRA|=(1<<ADSC);
    c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+	//Wait for conversion to complete
+	while(!(ADCSRA & (1<<ADIF)));
   18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	//Clear ADIF by writing one to it
+	ADCSRA|=(1<<ADIF);
+
+	return(ADC);
+}
+
   1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+uint16_t ADC_Run(uint8_t channel)
+{
   28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	uint16_t adc_result;
   30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
   38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
@@ -67,237 +88,120 @@ Disassembly of section .text:
   6e:	d8 e0       	ldi	r29, 0x08	; 8
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
-  74:	0e 94 6a 00 	call	0xd4	; 0xd4 <main>
-  78:	0c 94 b0 00 	jmp	0x160	; 0x160 <_exit>
+  74:	0e 94 40 00 	call	0x80	; 0x80 <main>
+  78:	0c 94 73 00 	jmp	0xe6	; 0xe6 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000080 <InitADC>:
-#include <avr/io.h>
-#include "AD_Convert.h"
-
-void InitADC(void)
-{
-	ADMUX=(1<<REFS0);                         // For Aref=AVcc;
-  80:	80 e4       	ldi	r24, 0x40	; 64
-  82:	80 93 7c 00 	sts	0x007C, r24
-	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //Rrescalar div factor =128
-  86:	87 e8       	ldi	r24, 0x87	; 135
-  88:	80 93 7a 00 	sts	0x007A, r24
-  8c:	08 95       	ret
-
-0000008e <ReadADC>:
-
-uint16_t ReadADC(uint8_t ch)
-{
-	//Select ADC Channel ch must be 0-7
-	ch=ch&0x07;
-	ADMUX|=ch;         
-  8e:	ec e7       	ldi	r30, 0x7C	; 124
-  90:	f0 e0       	ldi	r31, 0x00	; 0
-  92:	90 81       	ld	r25, Z
-}
-
-uint16_t ReadADC(uint8_t ch)
-{
-	//Select ADC Channel ch must be 0-7
-	ch=ch&0x07;
-  94:	87 70       	andi	r24, 0x07	; 7
-	ADMUX|=ch;         
-  96:	98 2b       	or	r25, r24
-  98:	90 83       	st	Z, r25
+00000080 <main>:
+	int test;
+	int side;
 	
-	//Start Single conversion
-	ADCSRA|=(1<<ADSC);
-  9a:	ea e7       	ldi	r30, 0x7A	; 122
-  9c:	f0 e0       	ldi	r31, 0x00	; 0
-  9e:	80 81       	ld	r24, Z
-  a0:	80 64       	ori	r24, 0x40	; 64
-  a2:	80 83       	st	Z, r24
-
-	//Wait for conversion to complete
-	while(!(ADCSRA & (1<<ADIF)));
-  a4:	80 81       	ld	r24, Z
-  a6:	84 ff       	sbrs	r24, 4
-  a8:	fd cf       	rjmp	.-6      	; 0xa4 <ReadADC+0x16>
-	//Clear ADIF by writing one to it
-	ADCSRA|=(1<<ADIF);
-
-	return(ADC);
-}
-
-  aa:	ea e7       	ldi	r30, 0x7A	; 122
-  ac:	f0 e0       	ldi	r31, 0x00	; 0
-  ae:	80 81       	ld	r24, Z
-  b0:	80 61       	ori	r24, 0x10	; 16
-  b2:	80 83       	st	Z, r24
-uint16_t ADC_Run(uint8_t channel)
-{
-  b4:	20 91 78 00 	lds	r18, 0x0078
-  b8:	30 91 79 00 	lds	r19, 0x0079
-	uint16_t adc_result;
-  bc:	82 2f       	mov	r24, r18
-  be:	93 2f       	mov	r25, r19
-  c0:	08 95       	ret
-
-000000c2 <ADC_Run>:
-
-	//Initialize ADC
-	InitADC();
-  c2:	cf 93       	push	r28
-  c4:	c8 2f       	mov	r28, r24
-
-	adc_result=ReadADC(channel);           // Read Analog value from channel-4
-	
-	return adc_result;
-  c6:	0e 94 40 00 	call	0x80	; 0x80 <InitADC>
-}
-  ca:	8c 2f       	mov	r24, r28
-  cc:	0e 94 47 00 	call	0x8e	; 0x8e <ReadADC>
-  d0:	cf 91       	pop	r28
-  d2:	08 95       	ret
-
-000000d4 <main>:
-
+	test = 0;
+	side = 0;
+	DDRD = 0x00;
+  80:	1a b8       	out	0x0a, r1	; 10
+	DDRB = 0xFF;
+  82:	8f ef       	ldi	r24, 0xFF	; 255
+  84:	84 b9       	out	0x04, r24	; 4
+	//DDRD |= (1 << DDD7); 
+	//PORTD = (1 << DDD7);
+	timer_init();
+  86:	0e 94 57 00 	call	0xae	; 0xae <timer_init>
 int main(void) {
 	uint8_t switches;
 	int test;
+	int side;
 	
-	DDRD = 0x00;
-  d4:	1a b8       	out	0x0a, r1	; 10
-	DDRB = 0xFF;
-  d6:	8f ef       	ldi	r24, 0xFF	; 255
-  d8:	84 b9       	out	0x04, r24	; 4
-	DDRD |= (1 << DDD7); 
-  da:	57 9a       	sbi	0x0a, 7	; 10
-	PORTD = (1 << DDD7);
-  dc:	80 e8       	ldi	r24, 0x80	; 128
-  de:	8b b9       	out	0x0b, r24	; 11
+	test = 0;
+  8a:	80 e0       	ldi	r24, 0x00	; 0
+  8c:	90 e0       	ldi	r25, 0x00	; 0
+	//PORTD = (1 << DDD7);
 	timer_init();
-  e0:	0e 94 8e 00 	call	0x11c	; 0x11c <timer_init>
 	while(1) {
 		switches = PIND;
-  e4:	c9 b1       	in	r28, 0x09	; 9
-			
-			//Send signal to the fan to receive power
-			//DDRD |= (1 << DDD7); 
-			//PORTD ^= (1 << DDD7);
-			
-			Mode_One(switches);
-  e6:	8c 2f       	mov	r24, r28
-  e8:	0e 94 80 00 	call	0x100	; 0x100 <Mode_One>
-			
-			Mode_Two(switches);
-  ec:	8c 2f       	mov	r24, r28
-  ee:	0e 94 8b 00 	call	0x116	; 0x116 <Mode_Two>
-			
-			Mode_Three(switches);
-  f2:	8c 2f       	mov	r24, r28
-  f4:	0e 94 8c 00 	call	0x118	; 0x118 <Mode_Three>
-			
-			Mode_Four(switches);
-  f8:	8c 2f       	mov	r24, r28
-  fa:	0e 94 8d 00 	call	0x11a	; 0x11a <Mode_Four>
-  fe:	f2 cf       	rjmp	.-28     	; 0xe4 <main+0x10>
+		if (switches & 0x04) {
+			PORTB ^= 0x04;
+  8e:	54 e0       	ldi	r21, 0x04	; 4
+			PORTB = 0x00;
+		}**/
+		test += 1;
+		if (test == 30000) {
+			side ^= 1;
+			test = 0;
+  90:	20 e0       	ldi	r18, 0x00	; 0
+  92:	30 e0       	ldi	r19, 0x00	; 0
+  94:	01 c0       	rjmp	.+2      	; 0x98 <main+0x18>
+  96:	c9 01       	movw	r24, r18
+	//DDRD |= (1 << DDD7); 
+	//PORTD = (1 << DDD7);
+	timer_init();
+	while(1) {
+		switches = PIND;
+		if (switches & 0x04) {
+  98:	4a 9b       	sbis	0x09, 2	; 9
+  9a:	03 c0       	rjmp	.+6      	; 0xa2 <main+0x22>
+			PORTB ^= 0x04;
+  9c:	45 b1       	in	r20, 0x05	; 5
+  9e:	45 27       	eor	r20, r21
+  a0:	45 b9       	out	0x05, r20	; 5
+		} /**else {
+			PORTB = 0x00;
+		}**/
+		test += 1;
+  a2:	01 96       	adiw	r24, 0x01	; 1
+		if (test == 30000) {
+  a4:	80 33       	cpi	r24, 0x30	; 48
+  a6:	45 e7       	ldi	r20, 0x75	; 117
+  a8:	94 07       	cpc	r25, r20
+  aa:	b1 f7       	brne	.-20     	; 0x98 <main+0x18>
+  ac:	f4 cf       	rjmp	.-24     	; 0x96 <main+0x16>
 
-00000100 <Mode_One>:
-
-void Mode_One(uint8_t swiValue) {
-	uint16_t adVolts;
-	uint8_t value;
-	
-	value = swiValue & 0x03;
- 100:	83 70       	andi	r24, 0x03	; 3
-	//run stationary single drop
-	if (value == 0x00) {
- 102:	41 f4       	brne	.+16     	; 0x114 <Mode_One+0x14>
-		adVolts = ADC_Run(0x00);
- 104:	0e 94 61 00 	call	0xc2	; 0xc2 <ADC_Run>
-		// 1000 ADC
-		if (adVolts < 0x1EB) {
- 108:	8b 3e       	cpi	r24, 0xEB	; 235
- 10a:	91 40       	sbci	r25, 0x01	; 1
- 10c:	18 f4       	brcc	.+6      	; 0x114 <Mode_One+0x14>
-			PORTD ^= 0x80;	//send signal to block fan from receiving power
- 10e:	8b b1       	in	r24, 0x0b	; 11
- 110:	80 58       	subi	r24, 0x80	; 128
- 112:	8b b9       	out	0x0b, r24	; 11
- 114:	08 95       	ret
-
-00000116 <Mode_Two>:
-	}
-		
-	return;
-}
-
-void Mode_Two(uint8_t swiValue) {
- 116:	08 95       	ret
-
-00000118 <Mode_Three>:
-	return;
-}
-
-void Mode_Three(uint8_t swiValue) {
- 118:	08 95       	ret
-
-0000011a <Mode_Four>:
-	return;
-}
-
-void Mode_Four(uint8_t swiValue) {
- 11a:	08 95       	ret
-
-0000011c <timer_init>:
+000000ae <timer_init>:
 //FAST PWM (1<<WGM13) (1<<WGM12) (1<<WGM11)
 //Phase/Freq (1<<WGM13)
 //Pre 8 (1<<CS11)
 //Pre 64 (1<<CS11) (1<<CS10)
 void timer_init(void) {
 	ICR1 = 4999;
- 11c:	87 e8       	ldi	r24, 0x87	; 135
- 11e:	93 e1       	ldi	r25, 0x13	; 19
- 120:	90 93 87 00 	sts	0x0087, r25
- 124:	80 93 86 00 	sts	0x0086, r24
+  ae:	87 e8       	ldi	r24, 0x87	; 135
+  b0:	93 e1       	ldi	r25, 0x13	; 19
+  b2:	90 93 87 00 	sts	0x0087, r25
+  b6:	80 93 86 00 	sts	0x0086, r24
 
-	DDRB |= (1 << DDB1) | (1 << DDB4);
- 128:	84 b1       	in	r24, 0x04	; 4
- 12a:	82 61       	ori	r24, 0x12	; 18
- 12c:	84 b9       	out	0x04, r24	; 4
-	PORTB = PORTB & (1 << DDB4);
- 12e:	85 b1       	in	r24, 0x05	; 5
- 130:	80 71       	andi	r24, 0x10	; 16
- 132:	85 b9       	out	0x05, r24	; 5
+	//DDRB |= (1 << DDB1); //| (1 << DDB4);
+	//PORTB = PORTB & (1 << DDB4);
 	TCNT1 = 0;
- 134:	10 92 85 00 	sts	0x0085, r1
- 138:	10 92 84 00 	sts	0x0084, r1
+  ba:	10 92 85 00 	sts	0x0085, r1
+  be:	10 92 84 00 	sts	0x0084, r1
 	TCCR1A |= (1 << COM1A1)|(1 << WGM11); //Enable compare output A in timer1
- 13c:	e0 e8       	ldi	r30, 0x80	; 128
- 13e:	f0 e0       	ldi	r31, 0x00	; 0
- 140:	80 81       	ld	r24, Z
- 142:	82 68       	ori	r24, 0x82	; 130
- 144:	80 83       	st	Z, r24
+  c2:	e0 e8       	ldi	r30, 0x80	; 128
+  c4:	f0 e0       	ldi	r31, 0x00	; 0
+  c6:	80 81       	ld	r24, Z
+  c8:	82 68       	ori	r24, 0x82	; 130
+  ca:	80 83       	st	Z, r24
 
 	//Set PWM mode Frequency and Phase/FAST Correct with prescalar 64
 	TCCR1B |= (1 << WGM13)|(1 << WGM12)|(1 << CS11)|(1 <<CS10);
- 146:	e1 e8       	ldi	r30, 0x81	; 129
- 148:	f0 e0       	ldi	r31, 0x00	; 0
- 14a:	80 81       	ld	r24, Z
- 14c:	8b 61       	ori	r24, 0x1B	; 27
- 14e:	80 83       	st	Z, r24
+  cc:	e1 e8       	ldi	r30, 0x81	; 129
+  ce:	f0 e0       	ldi	r31, 0x00	; 0
+  d0:	80 81       	ld	r24, Z
+  d2:	8b 61       	ori	r24, 0x1B	; 27
+  d4:	80 83       	st	Z, r24
 
 	TIFR1 = (0 << ICF1) | (0 << OCF1B) | (0 << OCF1A) | (0 << TOV1);
- 150:	16 ba       	out	0x16, r1	; 22
+  d6:	16 ba       	out	0x16, r1	; 22
 
-	OCR1A = 500; //50% duty cycle
- 152:	84 ef       	ldi	r24, 0xF4	; 244
- 154:	91 e0       	ldi	r25, 0x01	; 1
- 156:	90 93 89 00 	sts	0x0089, r25
- 15a:	80 93 88 00 	sts	0x0088, r24
- 15e:	08 95       	ret
+	OCR1A = 4500; //50% duty cycle
+  d8:	84 e9       	ldi	r24, 0x94	; 148
+  da:	91 e1       	ldi	r25, 0x11	; 17
+  dc:	90 93 89 00 	sts	0x0089, r25
+  e0:	80 93 88 00 	sts	0x0088, r24
+  e4:	08 95       	ret
 
-00000160 <_exit>:
- 160:	f8 94       	cli
+000000e6 <_exit>:
+  e6:	f8 94       	cli
 
-00000162 <__stop_program>:
- 162:	ff cf       	rjmp	.-2      	; 0x162 <__stop_program>
+000000e8 <__stop_program>:
+  e8:	ff cf       	rjmp	.-2      	; 0xe8 <__stop_program>
