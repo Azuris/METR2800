@@ -24,16 +24,6 @@ void Mode_One(uint8_t swiValue) {
 		if (adVolts < 0x1EB) {
 			PORTD ^= 0x80;	//send signal to block fan from receiving power
 		} 
-		/**DDRD |= (1 << DDD6);
-		TCCR0A |= 0b10000001;
-		TCCR0B |= 0b00000101;
-		
-		OCR0A = 0x0A;
-		_delay_ms(100);
-		OCR0A = 0x38;
-		_delay_ms(100);
-		//require timing for angles
-		// freq = (8MHz or 16Mhz)/8*510**/
 		return;
 	}
 		

@@ -3,31 +3,31 @@ METR.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  000000ea  0000015e  2**0
+  0 .data         00000000  00800100  00000158  000001cc  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000ea  00000000  00000000  00000074  2**1
+  1 .text         00000158  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  00000160  2**2
+  2 .stab         000006cc  00000000  00000000  000001cc  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  0000082c  2**0
+  3 .stabstr      00000097  00000000  00000000  00000898  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  000008c3  2**0
+  4 .comment      0000002f  00000000  00000000  0000092f  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 000000a8  00000000  00000000  000008f2  2**0
+  5 .debug_aranges 000000b0  00000000  00000000  0000095e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000003c5  00000000  00000000  0000099a  2**0
+  6 .debug_info   00000422  00000000  00000000  00000a0e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000265  00000000  00000000  00000d5f  2**0
+  7 .debug_abbrev 0000028e  00000000  00000000  00000e30  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000003e3  00000000  00000000  00000fc4  2**0
+  8 .debug_line   00000403  00000000  00000000  000010be  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000e8  00000000  00000000  000013a8  2**2
+  9 .debug_frame  000000f8  00000000  00000000  000014c4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000150  00000000  00000000  00001490  2**0
+ 10 .debug_str    00000162  00000000  00000000  000015bc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000012e  00000000  00000000  000015e0  2**0
+ 11 .debug_loc    00000161  00000000  00000000  0000171e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000068  00000000  00000000  0000170e  2**0
+ 12 .debug_ranges 00000070  00000000  00000000  0000187f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -88,120 +88,215 @@ uint16_t ADC_Run(uint8_t channel)
   6e:	d8 e0       	ldi	r29, 0x08	; 8
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
-  74:	0e 94 40 00 	call	0x80	; 0x80 <main>
-  78:	0c 94 73 00 	jmp	0xe6	; 0xe6 <_exit>
+  74:	0e 94 86 00 	call	0x10c	; 0x10c <main>
+  78:	0c 94 aa 00 	jmp	0x154	; 0x154 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000080 <main>:
-	int test;
-	int side;
+00000080 <test_run>:
+	uint8_t switches;
+	uint32_t test;
+	uint8_t side;
+	
+	test = 0;
+	side = 0;
+  80:	d1 2c       	mov	r13, r1
+void test_run(void) {
+	uint8_t switches;
+	uint32_t test;
+	uint8_t side;
+	
+	test = 0;
+  82:	80 e0       	ldi	r24, 0x00	; 0
+  84:	90 e0       	ldi	r25, 0x00	; 0
+  86:	dc 01       	movw	r26, r24
+	side = 0;
+	while(1) {
+		switches = PIND;
+		if (switches & 0x04) {
+			PORTB ^= 0x04;
+  88:	68 94       	set
+  8a:	bb 24       	eor	r11, r11
+  8c:	b2 f8       	bld	r11, 2
+		}**/
+		test = test + 1;
+		if (test > 2) {
+			PORTD ^= (1 << DDD7);
+			side += 1;
+			test = 0;
+  8e:	40 e0       	ldi	r20, 0x00	; 0
+  90:	50 e0       	ldi	r21, 0x00	; 0
+  92:	ba 01       	movw	r22, r20
+		}
+		if (side == 1) {
+			OCR1A = 750;
+		}
+		if (side > 2) {
+			TCCR1A &= (0 << COM1A1)|(0 << WGM11);
+  94:	c0 e8       	ldi	r28, 0x80	; 128
+  96:	d0 e0       	ldi	r29, 0x00	; 0
+			TCCR1B &= (0 << WGM13)|(0 << WGM12);
+  98:	0f 2e       	mov	r0, r31
+  9a:	f1 e8       	ldi	r31, 0x81	; 129
+  9c:	8f 2e       	mov	r8, r31
+  9e:	91 2c       	mov	r9, r1
+  a0:	f0 2d       	mov	r31, r0
+		}
+		if (side == 0) {
+			OCR1A = 250;
+		}
+		if (side == 1) {
+			OCR1A = 750;
+  a2:	28 e8       	ldi	r18, 0x88	; 136
+  a4:	30 e0       	ldi	r19, 0x00	; 0
+  a6:	0f 2e       	mov	r0, r31
+  a8:	fe ee       	ldi	r31, 0xEE	; 238
+  aa:	ef 2e       	mov	r14, r31
+  ac:	f2 e0       	ldi	r31, 0x02	; 2
+  ae:	ff 2e       	mov	r15, r31
+  b0:	f0 2d       	mov	r31, r0
+			PORTD ^= (1 << DDD7);
+			side += 1;
+			test = 0;
+		}
+		if (side == 0) {
+			OCR1A = 250;
+  b2:	0a ef       	ldi	r16, 0xFA	; 250
+  b4:	10 e0       	ldi	r17, 0x00	; 0
+	
+	test = 0;
+	side = 0;
+	while(1) {
+		switches = PIND;
+		if (switches & 0x04) {
+  b6:	4a 9b       	sbis	0x09, 2	; 9
+  b8:	03 c0       	rjmp	.+6      	; 0xc0 <test_run+0x40>
+			PORTB ^= 0x04;
+  ba:	c5 b0       	in	r12, 0x05	; 5
+  bc:	cb 24       	eor	r12, r11
+  be:	c5 b8       	out	0x05, r12	; 5
+		} /**else {
+			PORTB = 0x00;
+		}**/
+		test = test + 1;
+  c0:	01 96       	adiw	r24, 0x01	; 1
+  c2:	a1 1d       	adc	r26, r1
+  c4:	b1 1d       	adc	r27, r1
+		if (test > 2) {
+  c6:	83 30       	cpi	r24, 0x03	; 3
+  c8:	91 05       	cpc	r25, r1
+  ca:	a1 05       	cpc	r26, r1
+  cc:	b1 05       	cpc	r27, r1
+  ce:	30 f0       	brcs	.+12     	; 0xdc <test_run+0x5c>
+			PORTD ^= (1 << DDD7);
+  d0:	8b b1       	in	r24, 0x0b	; 11
+  d2:	80 58       	subi	r24, 0x80	; 128
+  d4:	8b b9       	out	0x0b, r24	; 11
+			side += 1;
+  d6:	d3 94       	inc	r13
+			test = 0;
+  d8:	db 01       	movw	r26, r22
+  da:	ca 01       	movw	r24, r20
+		}
+		if (side == 0) {
+  dc:	d1 10       	cpse	r13, r1
+  de:	04 c0       	rjmp	.+8      	; 0xe8 <test_run+0x68>
+			OCR1A = 250;
+  e0:	f9 01       	movw	r30, r18
+  e2:	11 83       	std	Z+1, r17	; 0x01
+  e4:	00 83       	st	Z, r16
+  e6:	e7 cf       	rjmp	.-50     	; 0xb6 <test_run+0x36>
+		}
+		if (side == 1) {
+  e8:	f1 e0       	ldi	r31, 0x01	; 1
+  ea:	df 12       	cpse	r13, r31
+  ec:	04 c0       	rjmp	.+8      	; 0xf6 <test_run+0x76>
+			OCR1A = 750;
+  ee:	f9 01       	movw	r30, r18
+  f0:	f1 82       	std	Z+1, r15	; 0x01
+  f2:	e0 82       	st	Z, r14
+  f4:	e0 cf       	rjmp	.-64     	; 0xb6 <test_run+0x36>
+		}
+		if (side > 2) {
+  f6:	f2 e0       	ldi	r31, 0x02	; 2
+  f8:	fd 15       	cp	r31, r13
+  fa:	e8 f6       	brcc	.-70     	; 0xb6 <test_run+0x36>
+			TCCR1A &= (0 << COM1A1)|(0 << WGM11);
+  fc:	c8 80       	ld	r12, Y
+  fe:	18 82       	st	Y, r1
+			TCCR1B &= (0 << WGM13)|(0 << WGM12);
+ 100:	f4 01       	movw	r30, r8
+ 102:	c0 80       	ld	r12, Z
+ 104:	10 82       	st	Z, r1
+			PORTB &= (0 << PINB1);
+ 106:	c5 b0       	in	r12, 0x05	; 5
+ 108:	15 b8       	out	0x05, r1	; 5
+ 10a:	d5 cf       	rjmp	.-86     	; 0xb6 <test_run+0x36>
+
+0000010c <main>:
+	uint32_t test;
+	uint8_t side;
 	
 	test = 0;
 	side = 0;
 	DDRD = 0x00;
-  80:	1a b8       	out	0x0a, r1	; 10
+ 10c:	1a b8       	out	0x0a, r1	; 10
 	DDRB = 0xFF;
-  82:	8f ef       	ldi	r24, 0xFF	; 255
-  84:	84 b9       	out	0x04, r24	; 4
-	//DDRD |= (1 << DDD7); 
+ 10e:	8f ef       	ldi	r24, 0xFF	; 255
+ 110:	84 b9       	out	0x04, r24	; 4
+	DDRD |= (1 << DDD7); 
+ 112:	57 9a       	sbi	0x0a, 7	; 10
 	//PORTD = (1 << DDD7);
 	timer_init();
-  86:	0e 94 57 00 	call	0xae	; 0xae <timer_init>
-int main(void) {
-	uint8_t switches;
-	int test;
-	int side;
-	
-	test = 0;
-  8a:	80 e0       	ldi	r24, 0x00	; 0
-  8c:	90 e0       	ldi	r25, 0x00	; 0
-	//PORTD = (1 << DDD7);
-	timer_init();
-	while(1) {
-		switches = PIND;
-		if (switches & 0x04) {
-			PORTB ^= 0x04;
-  8e:	54 e0       	ldi	r21, 0x04	; 4
-			PORTB = 0x00;
-		}**/
-		test += 1;
-		if (test == 30000) {
-			side ^= 1;
-			test = 0;
-  90:	20 e0       	ldi	r18, 0x00	; 0
-  92:	30 e0       	ldi	r19, 0x00	; 0
-  94:	01 c0       	rjmp	.+2      	; 0x98 <main+0x18>
-  96:	c9 01       	movw	r24, r18
-	//DDRD |= (1 << DDD7); 
-	//PORTD = (1 << DDD7);
-	timer_init();
-	while(1) {
-		switches = PIND;
-		if (switches & 0x04) {
-  98:	4a 9b       	sbis	0x09, 2	; 9
-  9a:	03 c0       	rjmp	.+6      	; 0xa2 <main+0x22>
-			PORTB ^= 0x04;
-  9c:	45 b1       	in	r20, 0x05	; 5
-  9e:	45 27       	eor	r20, r21
-  a0:	45 b9       	out	0x05, r20	; 5
-		} /**else {
-			PORTB = 0x00;
-		}**/
-		test += 1;
-  a2:	01 96       	adiw	r24, 0x01	; 1
-		if (test == 30000) {
-  a4:	80 33       	cpi	r24, 0x30	; 48
-  a6:	45 e7       	ldi	r20, 0x75	; 117
-  a8:	94 07       	cpc	r25, r20
-  aa:	b1 f7       	brne	.-20     	; 0x98 <main+0x18>
-  ac:	f4 cf       	rjmp	.-24     	; 0x96 <main+0x16>
+ 114:	0e 94 8e 00 	call	0x11c	; 0x11c <timer_init>
+	test_run();
+ 118:	0e 94 40 00 	call	0x80	; 0x80 <test_run>
 
-000000ae <timer_init>:
+0000011c <timer_init>:
 //FAST PWM (1<<WGM13) (1<<WGM12) (1<<WGM11)
 //Phase/Freq (1<<WGM13)
 //Pre 8 (1<<CS11)
 //Pre 64 (1<<CS11) (1<<CS10)
 void timer_init(void) {
 	ICR1 = 4999;
-  ae:	87 e8       	ldi	r24, 0x87	; 135
-  b0:	93 e1       	ldi	r25, 0x13	; 19
-  b2:	90 93 87 00 	sts	0x0087, r25
-  b6:	80 93 86 00 	sts	0x0086, r24
+ 11c:	87 e8       	ldi	r24, 0x87	; 135
+ 11e:	93 e1       	ldi	r25, 0x13	; 19
+ 120:	90 93 87 00 	sts	0x0087, r25
+ 124:	80 93 86 00 	sts	0x0086, r24
 
 	//DDRB |= (1 << DDB1); //| (1 << DDB4);
 	//PORTB = PORTB & (1 << DDB4);
 	TCNT1 = 0;
-  ba:	10 92 85 00 	sts	0x0085, r1
-  be:	10 92 84 00 	sts	0x0084, r1
-	TCCR1A |= (1 << COM1A1)|(1 << WGM11); //Enable compare output A in timer1
-  c2:	e0 e8       	ldi	r30, 0x80	; 128
-  c4:	f0 e0       	ldi	r31, 0x00	; 0
-  c6:	80 81       	ld	r24, Z
-  c8:	82 68       	ori	r24, 0x82	; 130
-  ca:	80 83       	st	Z, r24
+ 128:	10 92 85 00 	sts	0x0085, r1
+ 12c:	10 92 84 00 	sts	0x0084, r1
+	TCCR1A |= (1 << COM1A1)|(1<<WGM11); //Enable compare output A in timer1
+ 130:	e0 e8       	ldi	r30, 0x80	; 128
+ 132:	f0 e0       	ldi	r31, 0x00	; 0
+ 134:	80 81       	ld	r24, Z
+ 136:	82 68       	ori	r24, 0x82	; 130
+ 138:	80 83       	st	Z, r24
 
 	//Set PWM mode Frequency and Phase/FAST Correct with prescalar 64
-	TCCR1B |= (1 << WGM13)|(1 << WGM12)|(1 << CS11)|(1 <<CS10);
-  cc:	e1 e8       	ldi	r30, 0x81	; 129
-  ce:	f0 e0       	ldi	r31, 0x00	; 0
-  d0:	80 81       	ld	r24, Z
-  d2:	8b 61       	ori	r24, 0x1B	; 27
-  d4:	80 83       	st	Z, r24
+	TCCR1B |= (1 << WGM13)|(1 << WGM12)|(1 << CS11)|(1<<CS10);
+ 13a:	e1 e8       	ldi	r30, 0x81	; 129
+ 13c:	f0 e0       	ldi	r31, 0x00	; 0
+ 13e:	80 81       	ld	r24, Z
+ 140:	8b 61       	ori	r24, 0x1B	; 27
+ 142:	80 83       	st	Z, r24
 
 	TIFR1 = (0 << ICF1) | (0 << OCF1B) | (0 << OCF1A) | (0 << TOV1);
-  d6:	16 ba       	out	0x16, r1	; 22
+ 144:	16 ba       	out	0x16, r1	; 22
 
-	OCR1A = 4500; //50% duty cycle
-  d8:	84 e9       	ldi	r24, 0x94	; 148
-  da:	91 e1       	ldi	r25, 0x11	; 17
-  dc:	90 93 89 00 	sts	0x0089, r25
-  e0:	80 93 88 00 	sts	0x0088, r24
-  e4:	08 95       	ret
+	OCR1A = 2500; //50% duty cycle
+ 146:	84 ec       	ldi	r24, 0xC4	; 196
+ 148:	99 e0       	ldi	r25, 0x09	; 9
+ 14a:	90 93 89 00 	sts	0x0089, r25
+ 14e:	80 93 88 00 	sts	0x0088, r24
+ 152:	08 95       	ret
 
-000000e6 <_exit>:
-  e6:	f8 94       	cli
+00000154 <_exit>:
+ 154:	f8 94       	cli
 
-000000e8 <__stop_program>:
-  e8:	ff cf       	rjmp	.-2      	; 0xe8 <__stop_program>
+00000156 <__stop_program>:
+ 156:	ff cf       	rjmp	.-2      	; 0x156 <__stop_program>

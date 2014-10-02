@@ -45,41 +45,26 @@ LOW = 0xF7 (valid)
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdint.h>
 #include "AD_Convert.h"
 #include "Mode_Operation.h"
 #include "Timer1.h"
 
+void test_run(void);
+
 int main(void) {
 	uint8_t switches;
-	int test;
-	int side;
+	uint32_t test;
+	uint8_t side;
 	
 	test = 0;
 	side = 0;
 	DDRD = 0x00;
 	DDRB = 0xFF;
-	//DDRD |= (1 << DDD7); 
+	DDRD |= (1 << DDD7); 
 	//PORTD = (1 << DDD7);
 	timer_init();
-	while(1) {
-		switches = PIND;
-		if (switches & 0x04) {
-			PORTB ^= 0x04;
-		} /**else {
-			PORTB = 0x00;
-		}**/
-		test += 1;
-		if (test == 30000) {
-			side ^= 1;
-			test = 0;
-		}
-		/**if (side == 0) {
-			OCR1A = 500;
-		}
-		if (side == 1) {
-			OCR1A = 3000;
-		}**/
-	}
+	test_run();
 	while(1) {
 		switches = PIND;
 		//if (switches & 0x04) {
@@ -96,5 +81,41 @@ int main(void) {
 			
 			Mode_Four(switches);
 
-	}	
+	}
+	
+		
+}
+
+void test_run(void) {
+	uint8_t switches;
+	uint32_t test;
+	uint8_t side;
+	
+	test = 0;
+	side = 0;
+	while(1) {
+		switches = PIND;
+		if (switches & 0x04) {
+			PORTB ^= 0x04;
+		} /**else {
+			PORTB = 0x00;
+		}**/
+		test = test + 1;
+		if (test > 2) {
+			PORTD ^= (1 << DDD7);
+			side += 1;
+			test = 0;
+		}
+		if (side == 0) {
+			OCR1A = 250;
+		}
+		if (side == 1) {
+			OCR1A = 750;
+		}
+		if (side > 2) {
+			TCCR1A &= (0 << COM1A1)|(0 << WGM11);
+			TCCR1B &= (0 << WGM13)|(0 << WGM12);
+			PORTB &= (0 << PINB1);
+		}		
+	}
 }
