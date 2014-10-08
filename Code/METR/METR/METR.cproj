@@ -132,6 +132,12 @@
     <Compile Include="Mode_Operation.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Timer0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Timer0.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Timer1.c">
       <SubType>compile</SubType>
     </Compile>

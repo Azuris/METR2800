@@ -39,6 +39,7 @@ C_SRCS +=  \
 ../AD_Convert.c \
 ../METR.c \
 ../Mode_Operation.c \
+../Timer0.c \
 ../Timer1.c
 
 
@@ -52,24 +53,28 @@ OBJS +=  \
 AD_Convert.o \
 METR.o \
 Mode_Operation.o \
+Timer0.o \
 Timer1.o
 
 OBJS_AS_ARGS +=  \
 AD_Convert.o \
 METR.o \
 Mode_Operation.o \
+Timer0.o \
 Timer1.o
 
 C_DEPS +=  \
 AD_Convert.d \
 METR.d \
 Mode_Operation.d \
+Timer0.d \
 Timer1.d
 
 C_DEPS_AS_ARGS +=  \
 AD_Convert.d \
 METR.d \
 Mode_Operation.d \
+Timer0.d \
 Timer1.d
 
 OUTPUT_FILE_PATH +=METR.elf
@@ -83,6 +88,8 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

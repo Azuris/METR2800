@@ -42,13 +42,17 @@ LOW = 0xF7 (valid)
 #ifndef F_CPU
 #define F_CPU 1600000UL
 #endif
-
-#include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>
 #include "AD_Convert.h"
 #include "Mode_Operation.h"
 #include "Timer1.h"
+#include "Timer0.h"
+
+#ifdef AVR
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#endif
 
 void test_run(void);
 
@@ -61,17 +65,14 @@ int main(void) {
 	side = 0;
 	DDRD = 0x00;
 	DDRB = 0xFF;
-	DDRD |= (1 << DDD7); 
-	//PORTD = (1 << DDD7);
-	timer_init();
+	timer0_init();
+	timer1_init();
 	test_run();
 	while(1) {
 		switches = PIND;
-		//if (switches & 0x04) {
+		if (switches & 0x04) {
 			
 			//Send signal to the fan to receive power
-			//DDRD |= (1 << DDD7); 
-			//PORTD ^= (1 << DDD7);
 			
 			Mode_One(switches);
 			
@@ -80,42 +81,48 @@ int main(void) {
 			Mode_Three(switches);
 			
 			Mode_Four(switches);
-
-	}
-	
-		
+		}
+	}		
 }
 
 void test_run(void) {
 	uint8_t switches;
+	uint8_t fcl;
+	uint16_t inc;
 	uint32_t test;
 	uint8_t side;
 	
+	DDRD = (1 << DDD6)|(1 << DDD7);
+	//PORTD ^= (1 << DDD6);
 	test = 0;
 	side = 0;
+	inc = 550;
+	fcl = 0;
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
 			PORTB ^= 0x04;
-		} /**else {
-			PORTB = 0x00;
-		}**/
+		}
 		test = test + 1;
-		if (test > 2) {
+		if (test > 800000) {
 			PORTD ^= (1 << DDD7);
-			side += 1;
+			fcl += 1;
+			side ^= 1;
 			test = 0;
 		}
 		if (side == 0) {
-			OCR1A = 250;
+			OCR1A = 5261;//380
+			OCR1B = 6665;
+			OCR0A = 255;
 		}
 		if (side == 1) {
-			OCR1A = 750;
+			OCR1A = 3636;//550
+			OCR1B = 6895;
+			OCR0A = 255;
 		}
-		if (side > 2) {
-			TCCR1A &= (0 << COM1A1)|(0 << WGM11);
-			TCCR1B &= (0 << WGM13)|(0 << WGM12);
-			PORTB &= (0 << PINB1);
-		}		
+		if (fcl > 2) {
+			inc = inc - 50;
+			fcl = 0;
+		}	
 	}
 }

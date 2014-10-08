@@ -8,5 +8,7 @@ METR.c
 
 Mode_Operation.c
 
+Timer0.c
+
 Timer1.c
 

@@ -8,9 +8,13 @@
 #define F_CPU 1600000UL
 #endif
 
-#include <avr/io.h>
 #include <util/delay.h>
 #include "AD_Convert.h"
+
+#ifdef AVR
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#endif
 
 void Mode_One(uint8_t swiValue) {
 	uint16_t adVolts;
@@ -21,8 +25,8 @@ void Mode_One(uint8_t swiValue) {
 	if (value == 0x00) {
 		adVolts = ADC_Run(0x00);
 		// 1000 ADC
-		if (adVolts < 0x1EB) {
-			PORTD ^= 0x80;	//send signal to block fan from receiving power
+		if (adVolts < 205) {
+			OCR0A = 0;	//send signal to block fan from receiving power
 		} 
 		return;
 	}
