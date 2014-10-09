@@ -3,31 +3,31 @@ METR.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00000176  000001ea  2**0
+  0 .data         00000000  00800100  00000164  000001d8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000176  00000000  00000000  00000074  2**1
+  1 .text         00000164  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  000001ec  2**2
+  2 .stab         000006cc  00000000  00000000  000001d8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000097  00000000  00000000  000008b8  2**0
+  3 .stabstr      00000097  00000000  00000000  000008a4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .comment      0000002f  00000000  00000000  0000094f  2**0
+  4 .comment      0000002f  00000000  00000000  0000093b  2**0
                   CONTENTS, READONLY
-  5 .debug_aranges 000000d0  00000000  00000000  0000097e  2**0
+  5 .debug_aranges 000000d8  00000000  00000000  0000096a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000004d6  00000000  00000000  00000a4e  2**0
+  6 .debug_info   000004db  00000000  00000000  00000a42  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000002ee  00000000  00000000  00000f24  2**0
+  7 .debug_abbrev 000002fd  00000000  00000000  00000f1d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004ed  00000000  00000000  00001212  2**0
+  8 .debug_line   000004f8  00000000  00000000  0000121a  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000011c  00000000  00000000  00001700  2**2
+  9 .debug_frame  0000012c  00000000  00000000  00001714  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000017d  00000000  00000000  0000181c  2**0
+ 10 .debug_str    00000188  00000000  00000000  00001840  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000196  00000000  00000000  00001999  2**0
+ 11 .debug_loc    00000161  00000000  00000000  000019c8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000080  00000000  00000000  00001b2f  2**0
+ 12 .debug_ranges 00000088  00000000  00000000  00001b29  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -85,243 +85,231 @@ uint16_t ReadADC(uint8_t ch)
   6e:	d8 e0       	ldi	r29, 0x08	; 8
   70:	de bf       	out	0x3e, r29	; 62
   72:	cd bf       	out	0x3d, r28	; 61
-  74:	0e 94 90 00 	call	0x120	; 0x120 <main>
-  78:	0c 94 b9 00 	jmp	0x172	; 0x172 <_exit>
+  74:	0e 94 85 00 	call	0x10a	; 0x10a <main>
+  78:	0c 94 b0 00 	jmp	0x160	; 0x160 <_exit>
 
 0000007c <__bad_interrupt>:
   7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000080 <test_run>:
-	uint8_t fcl;
-	uint16_t inc;
-	uint32_t test;
+	uint32_t i;
 	uint8_t side;
 	
-	DDRD = (1 << DDD6)|(1 << DDD7);
-  80:	80 ec       	ldi	r24, 0xC0	; 192
-  82:	8a b9       	out	0x0a, r24	; 10
-	//PORTD ^= (1 << DDD6);
-	test = 0;
+	i = 0;
 	side = 0;
-  84:	70 e0       	ldi	r23, 0x00	; 0
-	uint32_t test;
+	DDRD = (1 << DDD7);
+  80:	80 e8       	ldi	r24, 0x80	; 128
+  82:	8a b9       	out	0x0a, r24	; 10
+	uint8_t switches;
+	uint32_t i;
 	uint8_t side;
 	
-	DDRD = (1 << DDD6)|(1 << DDD7);
-	//PORTD ^= (1 << DDD6);
-	test = 0;
+	i = 0;
+	side = 0;
+  84:	b1 2c       	mov	r11, r1
+void test_run(void) {
+	uint8_t switches;
+	uint32_t i;
+	uint8_t side;
+	
+	i = 0;
   86:	80 e0       	ldi	r24, 0x00	; 0
   88:	90 e0       	ldi	r25, 0x00	; 0
   8a:	dc 01       	movw	r26, r24
-	side = 0;
-	inc = 550;
-	fcl = 0;
-  8c:	60 e0       	ldi	r22, 0x00	; 0
+	DDRD = (1 << DDD7);
+	//PORTD ^= (1 << DDD6);
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
 			PORTB ^= 0x04;
-  8e:	68 94       	set
-  90:	55 24       	eor	r5, r5
-  92:	52 f8       	bld	r5, 2
+  8c:	68 94       	set
+  8e:	77 24       	eor	r7, r7
+  90:	72 f8       	bld	r7, 2
 		}
-		test = test + 1;
-		if (test > 800000) {
-			PORTD ^= (1 << DDD7);
-			fcl += 1;
+		if (i > 800000) {
 			side ^= 1;
-  94:	66 24       	eor	r6, r6
-  96:	63 94       	inc	r6
-			test = 0;
-  98:	c1 2c       	mov	r12, r1
-  9a:	d1 2c       	mov	r13, r1
-  9c:	76 01       	movw	r14, r12
-			OCR1A = 5261;
-			OCR1B = 6665;
+  92:	88 24       	eor	r8, r8
+  94:	83 94       	inc	r8
+			PORTD ^= (1 << DDD7);
+			i = 0;
+  96:	c1 2c       	mov	r12, r1
+  98:	d1 2c       	mov	r13, r1
+  9a:	76 01       	movw	r14, r12
+			OCR1A = 320;//backward
+			OCR1B = 197;
 			OCR0A = 255;
 		}
 		if (side == 1) {
-			OCR1A = 3636;
-  9e:	c8 e8       	ldi	r28, 0x88	; 136
-  a0:	d0 e0       	ldi	r29, 0x00	; 0
-  a2:	0f 2e       	mov	r0, r31
-  a4:	f4 e3       	ldi	r31, 0x34	; 52
-  a6:	2f 2e       	mov	r2, r31
-  a8:	fe e0       	ldi	r31, 0x0E	; 14
-  aa:	3f 2e       	mov	r3, r31
-  ac:	f0 2d       	mov	r31, r0
-			OCR1B = 6895;
-  ae:	ea e8       	ldi	r30, 0x8A	; 138
-  b0:	f0 e0       	ldi	r31, 0x00	; 0
-  b2:	0f 2e       	mov	r0, r31
-  b4:	ff ee       	ldi	r31, 0xEF	; 239
-  b6:	af 2e       	mov	r10, r31
-  b8:	fa e1       	ldi	r31, 0x1A	; 26
-  ba:	bf 2e       	mov	r11, r31
-  bc:	f0 2d       	mov	r31, r0
-			OCR0A = 255;
-  be:	88 24       	eor	r8, r8
-  c0:	8a 94       	dec	r8
-			fcl += 1;
+			OCR1A = 500;//forward
+  9c:	c8 e8       	ldi	r28, 0x88	; 136
+  9e:	d0 e0       	ldi	r29, 0x00	; 0
+  a0:	04 ef       	ldi	r16, 0xF4	; 244
+  a2:	11 e0       	ldi	r17, 0x01	; 1
+			OCR1B = 541;
+  a4:	ea e8       	ldi	r30, 0x8A	; 138
+  a6:	f0 e0       	ldi	r31, 0x00	; 0
+  a8:	0f 2e       	mov	r0, r31
+  aa:	fd e1       	ldi	r31, 0x1D	; 29
+  ac:	4f 2e       	mov	r4, r31
+  ae:	f2 e0       	ldi	r31, 0x02	; 2
+  b0:	5f 2e       	mov	r5, r31
+  b2:	f0 2d       	mov	r31, r0
 			side ^= 1;
-			test = 0;
+			PORTD ^= (1 << DDD7);
+			i = 0;
 		}
 		if (side == 0) {
-			OCR1A = 5261;
-  c2:	4d e8       	ldi	r20, 0x8D	; 141
-  c4:	54 e1       	ldi	r21, 0x14	; 20
-			OCR1B = 6665;
-  c6:	29 e0       	ldi	r18, 0x09	; 9
-  c8:	3a e1       	ldi	r19, 0x1A	; 26
-			OCR1B = 6895;
+			OCR1A = 320;//backward
+  b4:	40 e4       	ldi	r20, 0x40	; 64
+  b6:	51 e0       	ldi	r21, 0x01	; 1
+			OCR1B = 197;
+  b8:	25 ec       	ldi	r18, 0xC5	; 197
+  ba:	30 e0       	ldi	r19, 0x00	; 0
 			OCR0A = 255;
-		}
-		if (fcl > 2) {
-			inc = inc - 50;
-			fcl = 0;
-  ca:	71 2c       	mov	r7, r1
-  cc:	01 c0       	rjmp	.+2      	; 0xd0 <test_run+0x50>
-  ce:	67 2d       	mov	r22, r7
+  bc:	99 24       	eor	r9, r9
+  be:	9a 94       	dec	r9
 	side = 0;
-	inc = 550;
-	fcl = 0;
+	DDRD = (1 << DDD7);
+	//PORTD ^= (1 << DDD6);
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
-  d0:	4a 9b       	sbis	0x09, 2	; 9
-  d2:	03 c0       	rjmp	.+6      	; 0xda <test_run+0x5a>
+  c0:	4a 9b       	sbis	0x09, 2	; 9
+  c2:	03 c0       	rjmp	.+6      	; 0xca <test_run+0x4a>
 			PORTB ^= 0x04;
-  d4:	95 b0       	in	r9, 0x05	; 5
-  d6:	95 24       	eor	r9, r5
-  d8:	95 b8       	out	0x05, r9	; 5
+  c4:	a5 b0       	in	r10, 0x05	; 5
+  c6:	a7 24       	eor	r10, r7
+  c8:	a5 b8       	out	0x05, r10	; 5
 		}
-		test = test + 1;
-  da:	01 96       	adiw	r24, 0x01	; 1
-  dc:	a1 1d       	adc	r26, r1
-  de:	b1 1d       	adc	r27, r1
-		if (test > 800000) {
-  e0:	81 30       	cpi	r24, 0x01	; 1
-  e2:	15 e3       	ldi	r17, 0x35	; 53
-  e4:	91 07       	cpc	r25, r17
-  e6:	1c e0       	ldi	r17, 0x0C	; 12
-  e8:	a1 07       	cpc	r26, r17
-  ea:	b1 05       	cpc	r27, r1
-  ec:	38 f0       	brcs	.+14     	; 0xfc <test_run+0x7c>
-			PORTD ^= (1 << DDD7);
-  ee:	8b b1       	in	r24, 0x0b	; 11
-  f0:	80 58       	subi	r24, 0x80	; 128
-  f2:	8b b9       	out	0x0b, r24	; 11
-			fcl += 1;
-  f4:	6f 5f       	subi	r22, 0xFF	; 255
+		if (i > 800000) {
+  ca:	81 30       	cpi	r24, 0x01	; 1
+  cc:	65 e3       	ldi	r22, 0x35	; 53
+  ce:	96 07       	cpc	r25, r22
+  d0:	6c e0       	ldi	r22, 0x0C	; 12
+  d2:	a6 07       	cpc	r26, r22
+  d4:	b1 05       	cpc	r27, r1
+  d6:	30 f0       	brcs	.+12     	; 0xe4 <test_run+0x64>
 			side ^= 1;
-  f6:	76 25       	eor	r23, r6
-			test = 0;
-  f8:	d7 01       	movw	r26, r14
-  fa:	c6 01       	movw	r24, r12
+  d8:	b8 24       	eor	r11, r8
+			PORTD ^= (1 << DDD7);
+  da:	8b b1       	in	r24, 0x0b	; 11
+  dc:	80 58       	subi	r24, 0x80	; 128
+  de:	8b b9       	out	0x0b, r24	; 11
+			i = 0;
+  e0:	d7 01       	movw	r26, r14
+  e2:	c6 01       	movw	r24, r12
 		}
 		if (side == 0) {
-  fc:	71 11       	cpse	r23, r1
-  fe:	06 c0       	rjmp	.+12     	; 0x10c <test_run+0x8c>
-			OCR1A = 5261;
- 100:	59 83       	std	Y+1, r21	; 0x01
- 102:	48 83       	st	Y, r20
-			OCR1B = 6665;
- 104:	31 83       	std	Z+1, r19	; 0x01
- 106:	20 83       	st	Z, r18
+  e4:	b1 10       	cpse	r11, r1
+  e6:	06 c0       	rjmp	.+12     	; 0xf4 <test_run+0x74>
+			OCR1A = 320;//backward
+  e8:	59 83       	std	Y+1, r21	; 0x01
+  ea:	48 83       	st	Y, r20
+			OCR1B = 197;
+  ec:	31 83       	std	Z+1, r19	; 0x01
+  ee:	20 83       	st	Z, r18
 			OCR0A = 255;
- 108:	87 bc       	out	0x27, r8	; 39
- 10a:	07 c0       	rjmp	.+14     	; 0x11a <test_run+0x9a>
+  f0:	97 bc       	out	0x27, r9	; 39
+  f2:	07 c0       	rjmp	.+14     	; 0x102 <test_run+0x82>
 		}
 		if (side == 1) {
- 10c:	71 30       	cpi	r23, 0x01	; 1
- 10e:	29 f4       	brne	.+10     	; 0x11a <test_run+0x9a>
-			OCR1A = 3636;
- 110:	39 82       	std	Y+1, r3	; 0x01
- 112:	28 82       	st	Y, r2
-			OCR1B = 6895;
- 114:	b1 82       	std	Z+1, r11	; 0x01
- 116:	a0 82       	st	Z, r10
-			OCR0A = 255;
- 118:	87 bc       	out	0x27, r8	; 39
+  f4:	61 e0       	ldi	r22, 0x01	; 1
+  f6:	b6 12       	cpse	r11, r22
+  f8:	04 c0       	rjmp	.+8      	; 0x102 <test_run+0x82>
+			OCR1A = 500;//forward
+  fa:	19 83       	std	Y+1, r17	; 0x01
+  fc:	08 83       	st	Y, r16
+			OCR1B = 541;
+  fe:	51 82       	std	Z+1, r5	; 0x01
+ 100:	40 82       	st	Z, r4
 		}
-		if (fcl > 2) {
- 11a:	63 30       	cpi	r22, 0x03	; 3
- 11c:	c0 f6       	brcc	.-80     	; 0xce <test_run+0x4e>
- 11e:	d8 cf       	rjmp	.-80     	; 0xd0 <test_run+0x50>
+		i++;
+ 102:	01 96       	adiw	r24, 0x01	; 1
+ 104:	a1 1d       	adc	r26, r1
+ 106:	b1 1d       	adc	r27, r1
+		/**OCR1A = 550;
+		OCR1B = 400;
+		OCR0A = 255;
+		delay(1600000);**/
+	}
+ 108:	db cf       	rjmp	.-74     	; 0xc0 <test_run+0x40>
 
-00000120 <main>:
+0000010a <main>:
 	uint32_t test;
 	uint8_t side;
 	
 	test = 0;
 	side = 0;
 	DDRD = 0x00;
- 120:	1a b8       	out	0x0a, r1	; 10
-	DDRB = 0xFF;
- 122:	8f ef       	ldi	r24, 0xFF	; 255
- 124:	84 b9       	out	0x04, r24	; 4
+ 10a:	1a b8       	out	0x0a, r1	; 10
+	DDRB = 0x00;
+ 10c:	14 b8       	out	0x04, r1	; 4
 	timer0_init();
- 126:	0e 94 99 00 	call	0x132	; 0x132 <timer0_init>
+ 10e:	0e 94 8d 00 	call	0x11a	; 0x11a <timer0_init>
 	timer1_init();
- 12a:	0e 94 a4 00 	call	0x148	; 0x148 <timer1_init>
+ 112:	0e 94 98 00 	call	0x130	; 0x130 <timer1_init>
 	test_run();
- 12e:	0e 94 40 00 	call	0x80	; 0x80 <test_run>
+ 116:	0e 94 40 00 	call	0x80	; 0x80 <test_run>
 
-00000132 <timer0_init>:
+0000011a <timer0_init>:
 #endif
  /** Set up Timer0 on the Atmega328P to enable compare output mode on A
  for Fast PWM with clock prescaler 1024**/
 void timer0_init(void) {
 
 	DDRD |= (1 << DDD6);
- 132:	56 9a       	sbi	0x0a, 6	; 10
+ 11a:	56 9a       	sbi	0x0a, 6	; 10
 	TCNT0 = 0;
- 134:	16 bc       	out	0x26, r1	; 38
+ 11c:	16 bc       	out	0x26, r1	; 38
 	TCCR0A |= (1 << COM0A1)|(1<<WGM00);
- 136:	84 b5       	in	r24, 0x24	; 36
- 138:	81 68       	ori	r24, 0x81	; 129
- 13a:	84 bd       	out	0x24, r24	; 36
+ 11e:	84 b5       	in	r24, 0x24	; 36
+ 120:	81 68       	ori	r24, 0x81	; 129
+ 122:	84 bd       	out	0x24, r24	; 36
 	TCCR0B |= (1 << CS02);//(1<<CS00);(1<<WGM01)|
- 13c:	85 b5       	in	r24, 0x25	; 37
- 13e:	84 60       	ori	r24, 0x04	; 4
- 140:	85 bd       	out	0x25, r24	; 37
+ 124:	85 b5       	in	r24, 0x25	; 37
+ 126:	84 60       	ori	r24, 0x04	; 4
+ 128:	85 bd       	out	0x25, r24	; 37
 
 	OCR0A = 128; //Max = 255
- 142:	80 e8       	ldi	r24, 0x80	; 128
- 144:	87 bd       	out	0x27, r24	; 39
- 146:	08 95       	ret
+ 12a:	80 e8       	ldi	r24, 0x80	; 128
+ 12c:	87 bd       	out	0x27, r24	; 39
+ 12e:	08 95       	ret
 
-00000148 <timer1_init>:
-//Pre 64 (1<<CS11) (1<<CS10)
+00000130 <timer1_init>:
 /** Set up Timer1 on the Atmega328P to enable Compare Output mode on A and B 
 for Fast PWM mode with clock prescaler 64  and initialise the duty cycle to 
 5%**/
 void timer1_init(void) {
-	ICR1 = 39999;//4999;
- 148:	8f e3       	ldi	r24, 0x3F	; 63
- 14a:	9c e9       	ldi	r25, 0x9C	; 156
- 14c:	90 93 87 00 	sts	0x0087, r25
- 150:	80 93 86 00 	sts	0x0086, r24
+	
+	DDRB |= (1 << DDB1)|(1 << DDB2);
+ 130:	84 b1       	in	r24, 0x04	; 4
+ 132:	86 60       	ori	r24, 0x06	; 6
+ 134:	84 b9       	out	0x04, r24	; 4
+	ICR1 = 4999; //39999
+ 136:	87 e8       	ldi	r24, 0x87	; 135
+ 138:	93 e1       	ldi	r25, 0x13	; 19
+ 13a:	90 93 87 00 	sts	0x0087, r25
+ 13e:	80 93 86 00 	sts	0x0086, r24
 
 	TCNT1 = 0;
- 154:	10 92 85 00 	sts	0x0085, r1
- 158:	10 92 84 00 	sts	0x0084, r1
+ 142:	10 92 85 00 	sts	0x0085, r1
+ 146:	10 92 84 00 	sts	0x0084, r1
 	TCCR1A |= (1 << COM1A1)|(1 << COM1B1)|(1<<WGM11); 
- 15c:	e0 e8       	ldi	r30, 0x80	; 128
- 15e:	f0 e0       	ldi	r31, 0x00	; 0
- 160:	80 81       	ld	r24, Z
- 162:	82 6a       	ori	r24, 0xA2	; 162
- 164:	80 83       	st	Z, r24
-	TCCR1B |= (1 << WGM13)|(1 << WGM12)|(1 << CS11);//|(1<<CS10);
- 166:	e1 e8       	ldi	r30, 0x81	; 129
- 168:	f0 e0       	ldi	r31, 0x00	; 0
- 16a:	80 81       	ld	r24, Z
- 16c:	8a 61       	ori	r24, 0x1A	; 26
- 16e:	80 83       	st	Z, r24
- 170:	08 95       	ret
+ 14a:	e0 e8       	ldi	r30, 0x80	; 128
+ 14c:	f0 e0       	ldi	r31, 0x00	; 0
+ 14e:	80 81       	ld	r24, Z
+ 150:	82 6a       	ori	r24, 0xA2	; 162
+ 152:	80 83       	st	Z, r24
+	TCCR1B |= (1 << WGM13)|(1 << WGM12)|(1 << CS11)|(1<<CS10);
+ 154:	e1 e8       	ldi	r30, 0x81	; 129
+ 156:	f0 e0       	ldi	r31, 0x00	; 0
+ 158:	80 81       	ld	r24, Z
+ 15a:	8b 61       	ori	r24, 0x1B	; 27
+ 15c:	80 83       	st	Z, r24
+ 15e:	08 95       	ret
 
-00000172 <_exit>:
- 172:	f8 94       	cli
+00000160 <_exit>:
+ 160:	f8 94       	cli
 
-00000174 <__stop_program>:
- 174:	ff cf       	rjmp	.-2      	; 0x174 <__stop_program>
+00000162 <__stop_program>:
+ 162:	ff cf       	rjmp	.-2      	; 0x162 <__stop_program>

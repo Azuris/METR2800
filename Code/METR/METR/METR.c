@@ -49,12 +49,11 @@ LOW = 0xF7 (valid)
 #include "Timer1.h"
 #include "Timer0.h"
 
-#ifdef AVR
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#endif
 
 void test_run(void);
+void self_delay(void);
 
 int main(void) {
 	uint8_t switches;
@@ -64,7 +63,7 @@ int main(void) {
 	test = 0;
 	side = 0;
 	DDRD = 0x00;
-	DDRB = 0xFF;
+	DDRB = 0x00;
 	timer0_init();
 	timer1_init();
 	test_run();
@@ -87,42 +86,45 @@ int main(void) {
 
 void test_run(void) {
 	uint8_t switches;
-	uint8_t fcl;
-	uint16_t inc;
-	uint32_t test;
+	uint32_t i;
 	uint8_t side;
 	
-	DDRD = (1 << DDD6)|(1 << DDD7);
-	//PORTD ^= (1 << DDD6);
-	test = 0;
+	i = 0;
 	side = 0;
-	inc = 550;
-	fcl = 0;
+	DDRD = (1 << DDD7);
+	//PORTD ^= (1 << DDD6);
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
 			PORTB ^= 0x04;
 		}
-		test = test + 1;
-		if (test > 800000) {
-			PORTD ^= (1 << DDD7);
-			fcl += 1;
+		if (i > 800000) {
 			side ^= 1;
-			test = 0;
+			PORTD ^= (1 << DDD7);
+			i = 0;
 		}
 		if (side == 0) {
-			OCR1A = 5261;//380
-			OCR1B = 6665;
+			OCR1A = 320;//backward
+			OCR1B = 197;
 			OCR0A = 255;
 		}
 		if (side == 1) {
-			OCR1A = 3636;//550
-			OCR1B = 6895;
-			OCR0A = 255;
+			OCR1A = 500;//forward
+			OCR1B = 541;
 		}
-		if (fcl > 2) {
-			inc = inc - 50;
-			fcl = 0;
-		}	
+		i++;
+		/**OCR1A = 550;
+		OCR1B = 400;
+		OCR0A = 255;
+		delay(1600000);**/
 	}
+}
+
+void self_delay(void) {
+	int i;
+	i = 0;
+	while(i < 5) {
+		i++;
+	}
+	return;
 }
