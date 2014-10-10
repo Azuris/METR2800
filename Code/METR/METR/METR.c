@@ -53,33 +53,40 @@ LOW = 0xF7 (valid)
 #include <avr/interrupt.h>
 
 void test_run(void);
-void self_delay(void);
 
 int main(void) {
-	uint8_t switches;
-	uint32_t test;
-	uint8_t side;
-	
-	test = 0;
-	side = 0;
+
 	DDRD = 0x00;
+	DDRD ^= (1 << DDD7);
 	DDRB = 0x00;
 	timer0_init();
 	timer1_init();
 	test_run();
 	while(1) {
-		switches = PIND;
-		if (switches & 0x04) {
+		if (PIND & (1 << PIND2)) {
+			
+			//watch_delay(6000000);
 			
 			//Send signal to the fan to receive power
 			
-			Mode_One(switches);
+			if (PIND & (1 << PIND1)) {
+				//Mode_Two();
+				PORTD ^= (1<<PORTD7);
+				watch_delay(15000000);
+			}
 			
-			Mode_Two(switches);
+			if (PIND & (1 << PIND0)) {
+				//Mode_Three();
+			}
 			
-			Mode_Three(switches);
+			if (PIND & ((1 << PIND1)|(1 << PIND0))) {
+				//Mode_Four();
+			}
+			/**if (PIND & 0x04) {
+				PORTD = PORTD & (0 << PORTD7);
+			}**/
 			
-			Mode_Four(switches);
+			//Mode_One();
 		}
 	}		
 }
@@ -92,39 +99,38 @@ void test_run(void) {
 	i = 0;
 	side = 0;
 	DDRD = (1 << DDD7);
-	//PORTD ^= (1 << DDD6);
 	while(1) {
 		switches = PIND;
 		if (switches & 0x04) {
 			PORTB ^= 0x04;
 		}
-		if (i > 800000) {
+		//OCR1A = 1300;
+		
+		/**for (int i=300;i<3000;i+=50){
+			OCR1A = i;
+			watch_delay(150000);
+		}**/
+		OCR1A = 300;		
+		OCR1B = 789;
+		watch_delay(6000000);
+		//OCR1A = 2000;
+		OCR1A = 3200;
+		OCR1B = 3525;
+		watch_delay(6000000);
+		/**if (i > 800000) {
 			side ^= 1;
 			PORTD ^= (1 << DDD7);
 			i = 0;
 		}
 		if (side == 0) {
-			OCR1A = 320;//backward
-			OCR1B = 197;
+			OCR1A = 1300;//320;//backward
+			OCR1B = 789;//197;
 			OCR0A = 255;
 		}
 		if (side == 1) {
-			OCR1A = 500;//forward
-			OCR1B = 541;
+			OCR1A = 2000;//500;//forward
+			OCR1B = 3525;//541;
 		}
-		i++;
-		/**OCR1A = 550;
-		OCR1B = 400;
-		OCR0A = 255;
-		delay(1600000);**/
+		i++;**/
 	}
-}
-
-void self_delay(void) {
-	int i;
-	i = 0;
-	while(i < 5) {
-		i++;
-	}
-	return;
 }

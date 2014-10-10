@@ -6,10 +6,10 @@
  */ 
 
 
-void Mode_One(uint8_t swiValue);
+void Mode_One();
 
-void Mode_Two(uint8_t swiValue);
+void Mode_Two();
 
-void Mode_Three(uint8_t swiValue);
+void Mode_Three();
 
-void Mode_Four(uint8_t swiValue);
+void Mode_Four();

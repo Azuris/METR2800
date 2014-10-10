@@ -4,10 +4,7 @@
  * Created: 8/10/2014 10:58:40 AM
  *  Author: s4292369
  */
-#ifdef AVR
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#endif
+#include "Timer0.h"
  /** Set up Timer0 on the Atmega328P to enable compare output mode on A
  for Fast PWM with clock prescaler 1024**/
 void timer0_init(void) {

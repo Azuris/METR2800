@@ -1,7 +1,4 @@
-#ifdef AVR
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#endif
+#include "AD_Convert.h"
 
 void InitADC(void)
 {
