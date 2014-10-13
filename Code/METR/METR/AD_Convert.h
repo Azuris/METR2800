@@ -6,7 +6,6 @@
  */ 
 #ifdef AVR
 #include <avr/io.h>
-#include <avr/interrupt.h>
 #include <stdint.h>
 #endif
 
@@ -17,4 +16,8 @@ uint16_t ReadADC(uint8_t ch);
 
 uint16_t ReadADC(uint8_t ch);
 
+/** Channels between ADC0-3 [0x00, 0x01, 0x02, 0x03]
+respectively **/
 uint16_t ADC_Run(uint8_t channel);
+
+void ADC_Throw(void);

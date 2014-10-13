@@ -59,38 +59,29 @@ int main(void) {
 	DDRD = 0x00;
 	DDRD ^= (1 << DDD7);
 	DDRB = 0x00;
-	timer0_init();
+	//ADC_Throw();
+	timer0_init(); //move to mode operation part for final
 	timer1_init();
-	test_run();
+	//test_run();
 	while(1) {
 		if (PIND & (1 << PIND2)) {
 			
 			//watch_delay(6000000);
 			
-			//Send signal to the fan to receive power
+			//timer0_init();
 			
-			if (PIND & 0x02){ //(1 << PIND1)) {
-				PORTD = PORTD & (1<<PORTD7);
-				Mode_Two();
-				//watch_delay(15000000);
-			}
-			
-			if (PIND & 0x01){ //(1 << PIND0)) {
-				PORTD = PORTD & (0 << PORTD7);
+			if (PIND == 0x04) {
 				Mode_One();
-				//watch_delay(2);
-				//Mode_Three();
 			}
-			
-			/**if (PIND & 0x03) {//((1 << PIND1)|(1 << PIND0))) {
-				watch_delay(1);
-				//Mode_Four();
+			if (PIND == 0x05) {
+				Mode_Two();
 			}
-			if ((~PIND) & 0x03) {//((1 << PIND1)|(1 << PIND0))) {
-				PORTD = PORTD & (0 << PORTD7);
-			}**/
-			
-			
+			if (PIND == 0x06) {
+				Mode_Three();
+			}
+			if (PIND == 0x07) {
+				Mode_Four();
+			}
 		}
 	}		
 }

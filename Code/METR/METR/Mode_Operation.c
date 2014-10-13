@@ -54,6 +54,7 @@ void Mode_Two() {
 }
 
 void Mode_Three() {
+	ADC_Run(0x04);
 	return;
 }
 
