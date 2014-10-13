@@ -69,24 +69,28 @@ int main(void) {
 			
 			//Send signal to the fan to receive power
 			
-			if (PIND & (1 << PIND1)) {
-				//Mode_Two();
-				PORTD ^= (1<<PORTD7);
-				watch_delay(15000000);
+			if (PIND & 0x02){ //(1 << PIND1)) {
+				PORTD = PORTD & (1<<PORTD7);
+				Mode_Two();
+				//watch_delay(15000000);
 			}
 			
-			if (PIND & (1 << PIND0)) {
+			if (PIND & 0x01){ //(1 << PIND0)) {
+				PORTD = PORTD & (0 << PORTD7);
+				Mode_One();
+				//watch_delay(2);
 				//Mode_Three();
 			}
 			
-			if (PIND & ((1 << PIND1)|(1 << PIND0))) {
+			/**if (PIND & 0x03) {//((1 << PIND1)|(1 << PIND0))) {
+				watch_delay(1);
 				//Mode_Four();
 			}
-			/**if (PIND & 0x04) {
+			if ((~PIND) & 0x03) {//((1 << PIND1)|(1 << PIND0))) {
 				PORTD = PORTD & (0 << PORTD7);
 			}**/
 			
-			//Mode_One();
+			
 		}
 	}		
 }
@@ -110,11 +114,13 @@ void test_run(void) {
 			OCR1A = i;
 			watch_delay(150000);
 		}**/
-		OCR1A = 300;		
+		OCR1A = 1200;
+		//OCR1A = 300;		
 		OCR1B = 789;
 		watch_delay(6000000);
 		//OCR1A = 2000;
-		OCR1A = 3200;
+		OCR1A = 790;
+		//OCR1A = 3200;
 		OCR1B = 3525;
 		watch_delay(6000000);
 		/**if (i > 800000) {

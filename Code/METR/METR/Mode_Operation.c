@@ -20,10 +20,10 @@ void Mode_One() {
 			if (adVolts < 205) {
 				OCR0A = 0;	//send signal to block fan from receiving power
 				OCR1A = 2000;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR1A = 1300;
 				OCR1B = 789;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR0A = 128;
 			}
 		}		
@@ -39,14 +39,14 @@ void Mode_Two() {
 			if (adVolts < 205) {
 				OCR0A = 0;	//send signal to block fan from receiving power
 				OCR1A = 2000;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR1A = 1300;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR1A = 2000;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR1A = 1300;
 				OCR1B = 789;
-				watch_delay(1500000);
+				watch_delay(3000000);
 				OCR0A = 128;
 			}
 		}

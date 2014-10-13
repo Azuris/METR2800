@@ -16,14 +16,14 @@ for Fast PWM mode with clock prescaler 64  and initialise the duty cycle to
 void timer1_init(void) {
 	
 	DDRB |= (1 << DDB1)|(1 << DDB2);
-	ICR1 = 25000;//4999; //39999
+	ICR1 = 20000;//4999; //39999
 
 	TCNT1 = 0;
 	TCCR1A |= (1 << COM1A1)|(1 << COM1B1);//|(1<<WGM11); 
 	TCCR1B |= (1 << WGM13)|(1 << CS11);//|(1<<CS10);
 
 	
-	OCR1A = 1300;
+	OCR1A = 2000;
 	OCR1B = 3525;
 	return;
 }
