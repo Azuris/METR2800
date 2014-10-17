@@ -10,6 +10,8 @@
 
 #include <avr/io.h>
 
+//height 2m ADC 10millivolts 10cm ADC 20millivolts
+//max ADC around 2.3V
 void Mode_One() {
 	uint16_t adVolts;
 

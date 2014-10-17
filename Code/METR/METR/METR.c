@@ -53,6 +53,7 @@ LOW = 0xF7 (valid)
 #include <avr/interrupt.h>
 
 void test_run(void);
+void fan_run(void);
 
 int main(void) {
 
@@ -62,6 +63,7 @@ int main(void) {
 	//ADC_Throw();
 	timer0_init(); //move to mode operation part for final
 	timer1_init();
+	fan_run();
 	//test_run();
 	while(1) {
 		if (PIND & (1 << PIND2)) {
@@ -130,4 +132,10 @@ void test_run(void) {
 		}
 		i++;**/
 	}
+}
+
+void fan_run(void) {
+	OCR0A = 191;
+	watch_delay(3000000);
+	OCR0A = 0;
 }
