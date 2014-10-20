@@ -3,14 +3,15 @@
 void InitADC(void)
 {
 	ADMUX=(1<<REFS0);                         // For Aref=AVcc;
-	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //Rrescalar div factor =128
+	ADCSRA=(1<<ADEN)|(1<<ADPS1)|(1<<ADPS0);//1Mhz div 8 (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //Rrescalar div factor =128
 }
 
 uint16_t ReadADC(uint8_t ch)
 {
 	//Select ADC Channel ch must be 0-7
-	ch=ch&0x03;
-	ADMUX|=ch;         
+	if (ch > 0x03) {
+		return ADC;
+	}        
 	
 	//Start Single conversion
 	ADCSRA|=(1<<ADSC);

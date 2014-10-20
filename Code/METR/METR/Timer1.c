@@ -11,20 +11,20 @@
 //Pre 8 (1<<CS11)
 //Pre 64 (1<<CS11) (1<<CS10)
 /** Set up Timer1 on the Atmega328P to enable Compare Output mode on A and B 
-for Fast PWM mode with clock prescaler 64  and initialise the duty cycle to 
+for Fast PWM mode with clock prescaler 64 to 1 for 1 Mhz and initialise the duty cycle to 
 5%**/
 void timer1_init(void) {
 	
 	DDRB |= (1 << DDB1)|(1 << DDB2);
-	ICR1 = 20000;//4999; //39999
+	ICR1 = 19999;//20000 for 16Mhz;
 
 	TCNT1 = 0;
-	TCCR1A |= (1 << COM1A1)|(1 << COM1B1);//|(1<<WGM11); 
-	TCCR1B |= (1 << WGM13)|(1 << CS11);//|(1<<CS10);
+	TCCR1A |= (1 << COM1A1)|(1 << COM1B1)|(1<<WGM12)|(1<<WGM11);
+	TCCR1B |= (1 << WGM13)||(1<<CS10);
 
 	
-	OCR1A = 2000;
-	OCR1B = 3525;
+	OCR1A = 999; //Release
+	OCR1B = 999; //Fan Rotate
 	return;
 }
 

@@ -6,6 +6,7 @@
  */ 
 
 #include "Timer1.h"
+#include "Timer0.h"
 #include "AD_Convert.h"
 
 #include <avr/io.h>
@@ -56,6 +57,30 @@ void Mode_Two() {
 }
 
 void Mode_Three() {
+	uint16_t adVolts;
+	uint16_t adOne;
+	uint16_t adTwo;
+	uint8_t side;
+	
+	side = 0; //0 is forward direction
+	timer0_init();
+	while(1) {
+		if (side == 0) {
+			adVolts = ADC_Run(0x02);
+		} else {
+			adVolts = ADC_Run(0x03);
+		}
+		if (adVolts < 5) {
+			OCR0A = 0;
+			OCR1B = 3000;
+			watch_delay(3000000);
+			side ^= 1;
+		} 
+		adOne = ADC_Run(0x00);
+		adTwo = ADC_Run(0x01);
+		
+		
+	}
 	ADC_Run(0x04);
 	return;
 }

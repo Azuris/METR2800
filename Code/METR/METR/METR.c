@@ -58,13 +58,12 @@ void fan_run(void);
 int main(void) {
 
 	DDRD = 0x00;
-	DDRD ^= (1 << DDD7);
 	DDRB = 0x00;
 	//ADC_Throw();
 	timer0_init(); //move to mode operation part for final
 	timer1_init();
-	fan_run();
-	//test_run();
+	//fan_run();
+	test_run();
 	while(1) {
 		if (PIND & (1 << PIND2)) {
 			
@@ -92,30 +91,22 @@ void test_run(void) {
 	uint8_t switches;
 	uint32_t i;
 	uint8_t side;
-	
-	i = 0;
-	side = 0;
-	DDRD = (1 << DDD7);
 	while(1) {
-		switches = PIND;
-		if (switches & 0x04) {
-			PORTB ^= 0x04;
-		}
 		//OCR1A = 1300;
 		
-		/**for (int i=300;i<3000;i+=50){
+		for (int i=900;i<2900;i+=10){
 			OCR1A = i;
-			watch_delay(150000);
-		}**/
-		OCR1A = 1200;
-		//OCR1A = 300;		
-		OCR1B = 789;
-		watch_delay(6000000);
-		//OCR1A = 2000;
-		OCR1A = 790;
-		//OCR1A = 3200;
-		OCR1B = 3525;
-		watch_delay(6000000);
+			watch_delay(94000);
+		}
+		//OCR1A = 1200;
+		////OCR1A = 300;		
+		//OCR1B = 1054;
+		//watch_delay(200000);
+		////OCR1A = 2000;
+		//OCR1A = 790;
+		////OCR1A = 3200;
+		//OCR1B = 1020;
+		//watch_delay(200000);
 		/**if (i > 800000) {
 			side ^= 1;
 			PORTD ^= (1 << DDD7);
