@@ -63,7 +63,7 @@ int main(void) {
 	timer0_init(); //move to mode operation part for final
 	timer1_init();
 	//fan_run();
-	test_run();
+	//test_run();
 	while(1) {
 		if (PIND & (1 << PIND2)) {
 			
@@ -72,18 +72,21 @@ int main(void) {
 			//timer0_init();
 			
 			if (PIND == 0x04) {
-				Mode_One();
+				//Mode_One();
+				OCR0A = 5;
 			}
 			if (PIND == 0x05) {
-				Mode_Two();
+				//Mode_Two();
 			}
 			if (PIND == 0x06) {
-				Mode_Three();
+				//Mode_Three();
+				OCR0A = 171;
 			}
 			if (PIND == 0x07) {
-				Mode_Four();
+				//Mode_Four();
 			}
 		}
+		OCR0A = 5;
 	}		
 }
 
@@ -94,19 +97,20 @@ void test_run(void) {
 	while(1) {
 		//OCR1A = 1300;
 		
-		for (int i=900;i<2900;i+=10){
+		for (int i=1000;i<4000;i+=100){
 			OCR1A = i;
-			watch_delay(94000);
+			OCR1B = i;
+			watch_delay(1500000);
 		}
-		//OCR1A = 1200;
+		//OCR1A = 1020;
 		////OCR1A = 300;		
-		//OCR1B = 1054;
-		//watch_delay(200000);
+		//OCR1B = 4799;
+		//watch_delay(3000000);
 		////OCR1A = 2000;
-		//OCR1A = 790;
+		//OCR1A = 20000;
 		////OCR1A = 3200;
-		//OCR1B = 1020;
-		//watch_delay(200000);
+		//OCR1B = 3200;
+		//watch_delay(3000000);
 		/**if (i > 800000) {
 			side ^= 1;
 			PORTD ^= (1 << DDD7);
@@ -126,7 +130,13 @@ void test_run(void) {
 }
 
 void fan_run(void) {
-	OCR0A = 191;
-	watch_delay(3000000);
-	OCR0A = 0;
+	while (1) {
+		OCR0A = 64;
+		watch_delay(6000000);
+		OCR0A = 191;
+		watch_delay(6000000);
+		OCR0A = 5;
+		watch_delay(6000000);
+	}
+	
 }

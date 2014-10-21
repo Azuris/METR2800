@@ -71,17 +71,39 @@ void Mode_Three() {
 			adVolts = ADC_Run(0x03);
 		}
 		if (adVolts < 5) {
-			OCR0A = 0;
-			OCR1B = 3000;
+			OCR0A = 5;
+			if (side == 0) {
+				OCR1B = 1020;	
+			} else {
+				OCR1B = 1050;
+			}
 			watch_delay(3000000);
 			side ^= 1;
 		} 
 		adOne = ADC_Run(0x00);
 		adTwo = ADC_Run(0x01);
+		//ad's below 5 (0.02mV) either side of the beacons
+		if (adOne < 5 && adTwo < 5) {
+			OCR0A = 5;
+			OCR1A = 0; //(push)
+			watch_delay(3000000);
+			OCR1A = 0; //(pull)
+			if (side == 0) {
+				OCR1B = 1020;
+				watch_delay(3000000);
+			}
+			OCR0A = 171;
+			while (1) {
+				adVolts = ADC_Run(0x02);
+				if (adVolts < 5) {
+					OCR0A = 5;
+					break;		
+				}
+			}
+		}
 		
-		
+		break;
 	}
-	ADC_Run(0x04);
 	return;
 }
 
