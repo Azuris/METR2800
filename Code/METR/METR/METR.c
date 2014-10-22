@@ -60,9 +60,9 @@ int main(void) {
 	DDRD = 0x00;
 	DDRB = 0x00;
 	//ADC_Throw();
-	timer0_init(); //move to mode operation part for final
+	//timer0_init(); //move to mode operation part for final
 	timer1_init();
-	//fan_run();
+	fan_run();
 	//test_run();
 	while(1) {
 		if (PIND & (1 << PIND2)) {
@@ -94,29 +94,29 @@ void test_run(void) {
 	uint8_t switches;
 	uint32_t i;
 	uint8_t side;
+	i = 0;
 	while(1) {
 		//OCR1A = 1300;
 		
-		for (int i=1000;i<4000;i+=100){
-			OCR1A = i;
-			OCR1B = i;
-			watch_delay(1500000);
+		//for (int i=170;i<649;i+=10){
+			////OCR1A = i;
+			//OCR1B = i;
+			//watch_delay(3000000);
+		//}
+		OCR0A = 100;
+		OCR1B = 197;	
+		OCR1A = 200;
+		watch_delay(3000000);
+		OCR1B = 650;
+		OCR1A = 500;
+		OCR0A = 0;
+		watch_delay(3000000);
+		if (i > 2) {
+			TCCR0A &= 0x00;
+			TCCR0B &= 0x00;
 		}
-		//OCR1A = 1020;
-		////OCR1A = 300;		
-		//OCR1B = 4799;
-		//watch_delay(3000000);
-		////OCR1A = 2000;
-		//OCR1A = 20000;
-		////OCR1A = 3200;
-		//OCR1B = 3200;
-		//watch_delay(3000000);
-		/**if (i > 800000) {
-			side ^= 1;
-			PORTD ^= (1 << DDD7);
-			i = 0;
-		}
-		if (side == 0) {
+		i++;
+		/**if (side == 0) {
 			OCR1A = 1300;//320;//backward
 			OCR1B = 789;//197;
 			OCR0A = 255;
@@ -130,13 +130,21 @@ void test_run(void) {
 }
 
 void fan_run(void) {
+	uint8_t side;
+	side = 0;
 	while (1) {
-		OCR0A = 64;
+		timer0_init();
 		watch_delay(6000000);
-		OCR0A = 191;
-		watch_delay(6000000);
-		OCR0A = 5;
-		watch_delay(6000000);
+		OCR0A = 0;
+		TCCR0A &= 0x00;
+		TCCR0B &= 0x00;
+		if (side == 0) {
+			OCR1A = 650;
+		} else {
+			OCR1A = 197;
+		}
+		watch_delay(3000000);
+		side ^= 1;
 	}
 	
 }
