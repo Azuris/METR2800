@@ -132,6 +132,12 @@
     <Compile Include="Mode_Operation.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="serialio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="serialio.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Timer0.c">
       <SubType>compile</SubType>
     </Compile>

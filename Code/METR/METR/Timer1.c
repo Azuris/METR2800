@@ -23,8 +23,8 @@ void timer1_init(void) {
 	TCCR1B |= (1 << WGM13)|(1<<WGM12)|(1<<CS11)|(1<<CS10);
 
 	
-	OCR1A = 197; //Release 200-400
-	OCR1B = 200; //Fan Rotate 197-649
+	OCR1A = 650; //Fan Rotate 210-650
+	OCR1B = 200; //Release 200-400
 	return;
 }
 

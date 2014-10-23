@@ -3,7 +3,7 @@
 void InitADC(void)
 {
 	ADMUX=(1<<REFS0);                         // For Aref=AVcc;
-	ADCSRA=(1<<ADEN)|(1<<ADPS1)|(1<<ADPS0);//1Mhz div 8 (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); //Rrescalar div factor =128
+	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);//Prescalar div factor =128
 }
 
 uint16_t ReadADC(uint8_t ch)
@@ -30,7 +30,7 @@ uint16_t ADC_Run(uint8_t channel)
 	uint16_t adc_result;
 
 	//Initialize ADC
-	InitADC();
+	//InitADC();
 
 	adc_result=ReadADC(channel);           // Read Analog value from channel-4
 	
@@ -41,6 +41,7 @@ uint16_t ADC_Run(uint8_t channel)
 to allow stabilisation and set up for the AD converter (as suggested by the data sheet), 
 and ignores the returned value **/
 void ADC_Throw(void) {
+	InitADC();
 	ADC_Run(0x00);
 	return;
 }

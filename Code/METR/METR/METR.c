@@ -42,10 +42,11 @@ LOW = 0xF7 (valid)
 #ifndef F_CPU
 #define F_CPU 1600000UL
 #endif
-#include <util/delay.h>
+#include <stdio.h>
 #include <stdint.h>
 #include "AD_Convert.h"
 #include "Mode_Operation.h"
+#include "serialio.h"
 #include "Timer1.h"
 #include "Timer0.h"
 
@@ -58,35 +59,38 @@ void fan_run(void);
 int main(void) {
 
 	DDRD = 0x00;
+	DDRC = 0x00;
 	DDRB = 0x00;
 	//ADC_Throw();
-	//timer0_init(); //move to mode operation part for final
+	//timer0_init(191); //move to mode operation part for final
 	timer1_init();
-	fan_run();
+	//fan_run();
 	//test_run();
+	init_serial_stdio(19200, 0);
+	clear_serial_input_buffer();
+	sei();
 	while(1) {
-		if (PIND & (1 << PIND2)) {
+		if (PIND & (1 << PIND0)) {
 			
 			//watch_delay(6000000);
 			
 			//timer0_init();
 			
-			if (PIND == 0x04) {
+			if (PIND == 0x01) {
 				//Mode_One();
-				OCR0A = 5;
+			}
+			if (PIND == 0x03) {
+				Mode_Two();
+	
 			}
 			if (PIND == 0x05) {
-				//Mode_Two();
-			}
-			if (PIND == 0x06) {
 				//Mode_Three();
-				OCR0A = 171;
 			}
 			if (PIND == 0x07) {
 				//Mode_Four();
 			}
 		}
-		OCR0A = 5;
+		printf("fssf\n");
 	}		
 }
 
@@ -133,17 +137,15 @@ void fan_run(void) {
 	uint8_t side;
 	side = 0;
 	while (1) {
-		timer0_init();
-		watch_delay(6000000);
-		OCR0A = 0;
-		TCCR0A &= 0x00;
-		TCCR0B &= 0x00;
+		timer0_init(191);
+		watch_delay(9000000);
+		timer0_off();
 		if (side == 0) {
-			OCR1A = 650;
+			OCR1A = 210;
 		} else {
-			OCR1A = 197;
+			OCR1A = 650;
 		}
-		watch_delay(3000000);
+		watch_delay(2000000);
 		side ^= 1;
 	}
 	

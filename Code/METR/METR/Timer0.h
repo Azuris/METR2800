@@ -9,4 +9,5 @@
 #include <avr/interrupt.h>
 #endif
 
-void timer0_init(void);
+void timer0_init(uint8_t fan_speed);
+void timer0_off(void);
