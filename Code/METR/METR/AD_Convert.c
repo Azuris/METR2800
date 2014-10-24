@@ -9,9 +9,10 @@ void InitADC(void)
 uint16_t ReadADC(uint8_t ch)
 {
 	//Select ADC Channel ch must be 0-7
-	if (ch > 0x03) {
+	if (ch > 0x04) {
 		return ADC;
-	}        
+	}
+	ADMUX |= ch;        
 	
 	//Start Single conversion
 	ADCSRA|=(1<<ADSC);
@@ -30,7 +31,7 @@ uint16_t ADC_Run(uint8_t channel)
 	uint16_t adc_result;
 
 	//Initialize ADC
-	//InitADC();
+	InitADC();
 
 	adc_result=ReadADC(channel);           // Read Analog value from channel-4
 	
@@ -41,7 +42,7 @@ uint16_t ADC_Run(uint8_t channel)
 to allow stabilisation and set up for the AD converter (as suggested by the data sheet), 
 and ignores the returned value **/
 void ADC_Throw(void) {
-	InitADC();
+	//InitADC();
 	ADC_Run(0x00);
 	return;
 }

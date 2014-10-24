@@ -61,14 +61,11 @@ int main(void) {
 	DDRD = 0x00;
 	DDRC = 0x00;
 	DDRB = 0x00;
-	//ADC_Throw();
+	ADC_Throw();
 	//timer0_init(191); //move to mode operation part for final
 	timer1_init();
-	//fan_run();
+	fan_run();
 	//test_run();
-	init_serial_stdio(19200, 0);
-	clear_serial_input_buffer();
-	sei();
 	while(1) {
 		if (PIND & (1 << PIND0)) {
 			
@@ -84,13 +81,12 @@ int main(void) {
 	
 			}
 			if (PIND == 0x05) {
-				//Mode_Three();
+				Mode_Three();
 			}
 			if (PIND == 0x07) {
 				//Mode_Four();
 			}
 		}
-		printf("fssf\n");
 	}		
 }
 
@@ -135,18 +131,29 @@ void test_run(void) {
 
 void fan_run(void) {
 	uint8_t side;
+	uint16_t adVolts;
 	side = 0;
+	timer0_init(151);
 	while (1) {
-		timer0_init(191);
-		watch_delay(9000000);
-		timer0_off();
 		if (side == 0) {
-			OCR1A = 210;
+			adVolts = ADC_Run(0x02);
+			if (adVolts < 250) {
+				timer0_off();
+				OCR1A = 210;
+				watch_delay(1700000);
+				timer0_init(131);
+				side ^= 1;
+			}			
 		} else {
-			OCR1A = 650;
+			adVolts = ADC_Run(0x03);
+			if (adVolts < 200) {
+				timer0_off();
+				OCR1A = 650;
+				watch_delay(1700000);
+				timer0_init(131);
+				side ^= 1;
+			}
 		}
-		watch_delay(2000000);
-		side ^= 1;
 	}
 	
 }

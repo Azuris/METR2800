@@ -41,7 +41,7 @@ void Mode_Two() {
 			// 1000 ADC
 			if (adVolts < 200) {
 				//timer0_off();
-				timer0_init(200);
+				timer0_init(50);
 			}
 		}
 	return;
@@ -54,14 +54,14 @@ void Mode_Three() {
 	uint8_t side;
 	
 	side = 0; //0 is forward direction
-	timer0_init(191);
+	timer0_init(171);
 	while(1) {
 		if (side == 0) {
 			adVolts = ADC_Run(0x02);
 		} else {
 			adVolts = ADC_Run(0x03);
 		}
-		if (adVolts < 5) {
+		if (adVolts < 300) {
 			timer0_off();
 			if (side == 0) {
 				OCR1A = 197;	
@@ -84,10 +84,10 @@ void Mode_Three() {
 				OCR1A = 197;
 				watch_delay(2000000);
 			}
-			timer0_init(191);
+			timer0_init(171);
 			while (1) {
 				adVolts = ADC_Run(0x02);
-				if (adVolts < 5) {
+				if (adVolts < 350) {
 					timer0_off();
 					OCR1A = 650;
 					watch_delay(2000000);
@@ -99,15 +99,20 @@ void Mode_Three() {
 			if (side == 0) {
 				timer0_off();
 				OCR1A = 197;
-				timer0_init(151);
+				timer0_init(76);
 				side ^= 1;
 			} else {
-				OCR0A = 151;
+				OCR0A = 76;
 			}	
 		}
 		if (adTwo > adOne) {
 			if (side == 1) {
-				
+				timer0_off();
+				OCR1A = 650;
+				timer0_init(76);
+				side ^= 1;
+			} else {
+				OCR0A = 76;
 			}
 		}		
 	}
