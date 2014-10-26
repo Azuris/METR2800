@@ -4,7 +4,8 @@
 following conditions*/
 void InitADC(void) {
 	ADMUX=(1<<REFS0);                         // For Aref=AVcc;
-	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);//Prescalar div factor =128
+	//Prescalar div factor =128
+	ADCSRA=(1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
 }
 
 /*Read the given AD Converter channel that is between Ch1-4, and waits
@@ -26,6 +27,7 @@ uint16_t ReadADC(uint8_t ch) {
 
 	return(ADC);
 }
+
 /* Runs the Analogue Digital converter for a single conversion by 
 initialising the registers (to clear any possible corruption 
 in the registers) and returns the outputted value by the converter.*/
@@ -44,7 +46,6 @@ uint16_t ADC_Run(uint8_t channel) {
 to allow it to stabilise and set up for the AD converter (as suggested by the data 
 sheet), and ignores the returned value */
 void ADC_Throw(void) {
-	//InitADC();
 	ADC_Run(0x00);
 	return;
 }

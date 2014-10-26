@@ -1,6 +1,4 @@
-#ifdef AVR
 #include <avr/io.h>
-#endif
 
 /* Initialises Timer 0 on the Atmega328P, for the fan 
 duty cycle. */

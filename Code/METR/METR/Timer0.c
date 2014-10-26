@@ -1,7 +1,7 @@
 #include "Timer0.h"
 
- /* Set up Timer 0 on the Atmega328P to enable compare output mode on A
- for Fast PWM with clock prescalar 1024 (16Mhz) and duty cycle fan speed, fan_speed.*/
+/* Set up Timer 0 on the Atmega328P to enable compare output mode on A
+for Fast PWM with clock prescalar 1024 (16Mhz) and duty cycle fan speed, fan_speed.*/
 void timer0_init(uint8_t fan_speed) {
 
 	DDRD |= (1 << DDD6);
