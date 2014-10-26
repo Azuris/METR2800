@@ -11,40 +11,71 @@
 
 #include <avr/io.h>
 
-//height 2m ADC 10millivolts 10cm ADC 20millivolts
-//max ADC around 2.3V
 void Mode_One() {
 	uint16_t adVolts;
-
-	//run stationary single drop
-		while(1) {
-			adVolts = ADC_Run(0x00);
-			// 1000 ADC
-			if (adVolts < 205) {
-				OCR0A = 0;	//send signal to block fan from receiving power
-				OCR1A = 2000;
-				watch_delay(3000000);
-				OCR1A = 1300;
-				OCR1B = 789;
-				watch_delay(3000000);
-				OCR0A = 128;
+	uint16_t adOne;
+	
+	timer0_init(140);
+	watch_delay(3000000);
+	adOne = ADC_Run(0x00);
+	while(1) {
+		if ((adOne < 420)) {
+			timer0_off();
+			OCR1B = 350; //(push)
+			watch_delay(1500000);
+			OCR1B = 200; //(pull)
+			OCR1A = 197;
+			watch_delay(2000000);
+			timer0_init(100);
+			timer0_off();
+			watch_delay(1500000);
+			timer0_init(140);
+			while (1) {
+				adVolts = ADC_Run(0x03);
+				if (adVolts < 322) {
+					timer0_off();
+					OCR1A = 650;
+					return;
+				}
 			}
-		}		
+		}
+		adOne = ADC_Run(0x00);
+	}
 	return;
 }
 
 void Mode_Two() {
 	uint16_t adVolts;
-		
-		while(1) {
-			adVolts = ADC_Run(0x02);
-			// 1000 ADC
-			if (adVolts < 200) {
-				//timer0_off();
-				timer0_init(50);
+	uint16_t adOne;
+	
+	timer0_init(140);
+	watch_delay(12000000);
+	timer0_off();
+	watch_delay(3000000);
+	while(1) {
+		adOne = ADC_Run(0x00);
+		if ((adOne < 480)) {
+			timer0_off();
+			OCR1B = 350; //(push)
+			watch_delay(1500000);
+			OCR1B = 200; //(pull)
+			watch_delay(2000000);
+			OCR1A = 210;
+			watch_delay(2000000);
+			timer0_init(70);
+			timer0_off();
+			watch_delay(1500000);
+			timer0_init(140);
+			while (1) {
+				adVolts = ADC_Run(0x03);
+				if (adVolts < 322) {
+					timer0_off();
+					OCR1A = 650;
+					return;
+				}
 			}
 		}
-	return;
+	}
 }
 //2.3 = 471
 void Mode_Three() {
@@ -54,7 +85,7 @@ void Mode_Three() {
 	uint8_t side;
 	
 	side = 0; //0 is forward direction
-	timer0_init(171);
+	timer0_init(110);
 	while(1) {
 		if (side == 0) {
 			adVolts = ADC_Run(0x02);
@@ -70,14 +101,14 @@ void Mode_Three() {
 			}
 			watch_delay(2000000);
 			side ^= 1;
-			timer0_init(150);
+			timer0_init(110);
 		} 
 		adOne = ADC_Run(0x00);
 		adTwo = ADC_Run(0x01);
 		//ad's below 5 (0.02mV) either side of the beacons
-		if (adOne < 5 && adTwo < 5) {
+		if (adOne < 493 && adTwo < 493) {
 			timer0_off();
-			OCR1B = 500; //(push)
+			OCR1B = 350; //(push)
 			watch_delay(1500000);
 			OCR1B = 200; //(pull)
 			if (side == 0) {
@@ -99,20 +130,20 @@ void Mode_Three() {
 			if (side == 0) {
 				timer0_off();
 				OCR1A = 197;
-				timer0_init(76);
+				timer0_init(110);
 				side ^= 1;
 			} else {
-				OCR0A = 76;
+				OCR0A = 110;
 			}	
 		}
 		if (adTwo > adOne) {
 			if (side == 1) {
 				timer0_off();
 				OCR1A = 650;
-				timer0_init(76);
+				timer0_init(110);
 				side ^= 1;
 			} else {
-				OCR0A = 76;
+				OCR0A = 110;
 			}
 		}		
 	}

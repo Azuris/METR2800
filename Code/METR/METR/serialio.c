@@ -300,7 +300,7 @@ ISR(USART_UDRE_vect)
  * the input buffer.
  */
 
-ISR(USART_RX_vect) 
+ISR(USART_TX_vect) 
 {
 	/* Set the overrun flag if UDR overrun occurred */
 #if 0

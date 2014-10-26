@@ -1,13 +1,11 @@
-/*
- * Timer0.h
- *
- * Created: 8/10/2014 11:14:10 AM
- *  Author: s4292369
- */ 
 #ifdef AVR
 #include <avr/io.h>
-#include <avr/interrupt.h>
 #endif
 
+/* Initialises Timer 0 on the Atmega328P, for the fan 
+duty cycle. */
 void timer0_init(uint8_t fan_speed);
+
+/* Disconnects Timer 0 on the Atmega328P, from the PinB
+ to turn off the fan.*/
 void timer0_off(void);
